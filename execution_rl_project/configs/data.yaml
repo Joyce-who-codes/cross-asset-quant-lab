@@ -1,0 +1,5 @@
+input_dir: data/processed/hbt
+train_files:
+  - btcusdt_day1.npz
+valid_files:
+  - btcusdt_day2.npz

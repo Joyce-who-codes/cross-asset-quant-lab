@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+
+# Local data artifacts (too large for Git)
+execution_rl_project/data/raw/
+execution_rl_project/data/processed/
+
+# OS files
+.DS_Store

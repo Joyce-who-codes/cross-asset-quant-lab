@@ -1,0 +1,8 @@
+numpy
+pandas
+pyyaml
+gymnasium
+stable-baselines3
+torch
+tqdm
+hftbacktest
