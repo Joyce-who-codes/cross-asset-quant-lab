@@ -1,7 +1,17 @@
+from collections import Counter
 from stable_baselines3 import PPO
 
 from src.env.execution_env import ExecutionEnv
 from src.utils.io import load_yaml
+
+
+ACTION_NAME = {
+    0: "HOLD",
+    1: "PLACE_BID1",
+    2: "PLACE_BID2",
+    3: "MARKET_BUY_SMALL",
+    4: "CANCEL_ALL",
+}
 
 
 def main() -> None:
@@ -22,10 +32,14 @@ def main() -> None:
     obs, info = env.reset()
     done = False
     total_reward = 0.0
+    action_counter = Counter()
 
     while not done:
         action, _ = model.predict(obs, deterministic=True)
-        obs, reward, terminated, truncated, step_info = env.step(int(action))
+        action = int(action)
+        action_counter[action] += 1
+
+        obs, reward, terminated, truncated, step_info = env.step(action)
         total_reward += reward
         done = terminated or truncated
 
@@ -34,6 +48,9 @@ def main() -> None:
     print("filled_qty:", step_info["filled_qty"])
     print("remaining_qty:", step_info["remaining_qty"])
     print("equity:", step_info["equity"])
+    print("action counts:")
+    for k, v in sorted(action_counter.items()):
+        print(f"  {ACTION_NAME[k]}: {v}")
 
 
 if __name__ == "__main__":
