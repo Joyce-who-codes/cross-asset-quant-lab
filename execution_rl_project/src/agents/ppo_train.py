@@ -1,20 +1,32 @@
+from __future__ import annotations
+
 from stable_baselines3 import PPO
-from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.vec_env import SubprocVecEnv
 
 from src.env.execution_env import ExecutionEnv
 from src.utils.io import ensure_dir, load_yaml
 from src.utils.seed import set_seed
 
 
-def make_env(env_cfg: dict, book_path: str, trade_path: str, snapshot_path: str | None):
-    def _fn():
-        return ExecutionEnv(
+def make_env(
+    env_cfg: dict,
+    book_path: str,
+    trade_path: str,
+    snapshot_path: str | None,
+    rank: int,
+    base_seed: int,
+):
+    def _init():
+        env = ExecutionEnv(
             env_cfg=env_cfg,
             book_path=book_path,
             trade_path=trade_path,
             snapshot_path=snapshot_path,
         )
-    return _fn
+        env.reset(seed=base_seed + rank)
+        return env
+
+    return _init
 
 
 def main() -> None:
@@ -28,11 +40,27 @@ def main() -> None:
     trade_path = "/home/joyce/test_trades.csv"
     snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/test_book.csv"
 
-    vec_env = make_vec_env(
-        make_env(env_cfg, book_path, trade_path, snapshot_path),
-        n_envs=1,
-        seed=train_cfg["seed"],
-    )
+    n_envs = 4
+
+    env_fns = [
+        make_env(
+            env_cfg=env_cfg,
+            book_path=book_path,
+            trade_path=trade_path,
+            snapshot_path=snapshot_path,
+            rank=i,
+            base_seed=train_cfg["seed"],
+        )
+        for i in range(n_envs)
+    ]
+
+    vec_env = SubprocVecEnv(env_fns)
+
+    print(f"[train] n_envs={n_envs}")
+    print(f"[train] book_path={book_path}")
+    print(f"[train] trade_path={trade_path}")
+    print(f"[train] snapshot_path={snapshot_path}")
+    print(f"[train] device={train_cfg['device']}")
 
     model = PPO(
         policy="MlpPolicy",
@@ -50,6 +78,8 @@ def main() -> None:
 
     model.learn(total_timesteps=train_cfg["total_timesteps"])
     model.save(str(model_dir / "ppo_execution_agent"))
+
+    vec_env.close()
 
 
 if __name__ == "__main__":
