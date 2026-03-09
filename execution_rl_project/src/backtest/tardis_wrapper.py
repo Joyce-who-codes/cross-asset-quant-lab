@@ -38,6 +38,9 @@ class TardisExecutionWrapper:
         symbol: str,
         maker_fee: float,
         taker_fee: float,
+        tick_size: float,
+        roi_lb: float,
+        roi_ub: float,
         top_k: int = 5,
         snapshot_path: Optional[str] = None,
     ):
@@ -59,7 +62,12 @@ class TardisExecutionWrapper:
         if snapshot_path is not None:
             self.snapshots = load_snapshot25_csv(snapshot_path, symbol=symbol)
 
-        self.replay = OrderBookReplay(top_k=top_k)
+        self.replay = OrderBookReplay(
+            tick_size=tick_size,
+            roi_lb=roi_lb,
+            roi_ub=roi_ub,
+            top_k=top_k,
+        )
 
         self.position = 0.0
         self.cash = 0.0

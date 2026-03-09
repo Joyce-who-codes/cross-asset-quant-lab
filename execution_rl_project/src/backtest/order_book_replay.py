@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections import deque
 from dataclasses import dataclass
 from typing import Deque, Optional
-import heapq
 
 import numpy as np
 import pandas as pd
@@ -26,24 +25,45 @@ class ReplayMarketState:
 
 class OrderBookReplay:
     """
-    Faster lightweight L2 replay engine.
+    Array-ladder L2 replay engine.
 
-    Main optimizations:
-    - preload event columns to numpy arrays
-    - integer-coded event/side arrays
-    - binary search snapshot/event bootstrap points
-    - top-k cache with dirty flag
-    - O(1) rolling trade feature updates
+    Key idea:
+    - Use fixed price ladder arrays instead of dict books
+    - Book update: O(1)
+    - Best bid/ask maintenance: near O(1)
+    - Top-k extraction: walk outward from best levels
     """
 
-    def __init__(self, top_k: int = 5, trade_buffer_size: int = 200):
-        self.top_k = top_k
-        self.trade_buffer_size = trade_buffer_size
+    def __init__(
+        self,
+        tick_size: float,
+        roi_lb: float,
+        roi_ub: float,
+        top_k: int = 5,
+        trade_buffer_size: int = 200,
+    ):
+        self.tick_size = float(tick_size)
+        self.roi_lb = float(roi_lb)
+        self.roi_ub = float(roi_ub)
+        self.top_k = int(top_k)
+        self.trade_buffer_size = int(trade_buffer_size)
 
-        self.bids: dict[float, float] = {}
-        self.asks: dict[float, float] = {}
+        if self.tick_size <= 0:
+            raise ValueError("tick_size must be positive")
+        if self.roi_ub <= self.roi_lb:
+            raise ValueError("roi_ub must be greater than roi_lb")
 
-        # store signed trade amounts
+        self.n_levels = int(round((self.roi_ub - self.roi_lb) / self.tick_size)) + 1
+
+        # array ladder
+        self.bid_qty = np.zeros(self.n_levels, dtype=np.float32)
+        self.ask_qty = np.zeros(self.n_levels, dtype=np.float32)
+
+        # current best indices
+        self.best_bid_idx = -1
+        self.best_ask_idx = -1
+
+        # rolling trade stats
         self.trade_buffer: Deque[float] = deque(maxlen=trade_buffer_size)
         self.buy_vol = 0.0
         self.sell_vol = 0.0
@@ -64,10 +84,6 @@ class OrderBookReplay:
         self.amount_arr: np.ndarray | None = None
 
         self.snapshot_ts_arr: np.ndarray | None = None
-
-        self._cached_top_bids: list[tuple[float, float]] = []
-        self._cached_top_asks: list[tuple[float, float]] = []
-        self._book_dirty = True
 
     # ----------------------------
     # public api
@@ -95,16 +111,14 @@ class OrderBookReplay:
         self.current_idx = 0
         self.current_ts = int(self.exch_ts_arr[0])
 
-        self.bids.clear()
-        self.asks.clear()
+        self.bid_qty.fill(0.0)
+        self.ask_qty.fill(0.0)
+        self.best_bid_idx = -1
+        self.best_ask_idx = -1
 
         self.trade_buffer.clear()
         self.buy_vol = 0.0
         self.sell_vol = 0.0
-
-        self._book_dirty = True
-        self._cached_top_bids = []
-        self._cached_top_asks = []
 
         self._bootstrap_book(start_idx=start_idx)
 
@@ -125,25 +139,11 @@ class OrderBookReplay:
         return self.current_idx >= self.n_events
 
     def get_market_state(self) -> ReplayMarketState:
-        self._ensure_top_levels()
-
-        top_bids = self._cached_top_bids
-        top_asks = self._cached_top_asks
-
-        if not top_bids or not top_asks:
+        if self.best_bid_idx < 0 or self.best_ask_idx < 0:
             raise RuntimeError("book is incomplete: missing bids or asks")
 
-        bid_prices = [x[0] for x in top_bids]
-        bid_sizes = [x[1] for x in top_bids]
-        ask_prices = [x[0] for x in top_asks]
-        ask_sizes = [x[1] for x in top_asks]
-
-        while len(bid_prices) < self.top_k:
-            bid_prices.append(bid_prices[-1])
-            bid_sizes.append(0.0)
-        while len(ask_prices) < self.top_k:
-            ask_prices.append(ask_prices[-1])
-            ask_sizes.append(0.0)
+        bid_prices, bid_sizes = self._collect_top_bids()
+        ask_prices, ask_sizes = self._collect_top_asks()
 
         trade_imb, signed_vol = self._trade_features()
 
@@ -158,6 +158,27 @@ class OrderBookReplay:
             recent_trade_imbalance=trade_imb,
             recent_signed_volume=signed_vol,
         )
+
+    # ----------------------------
+    # array helpers
+    # ----------------------------
+    def _price_to_idx(self, price: float) -> int:
+        idx = int(round((price - self.roi_lb) / self.tick_size))
+        return idx
+
+    def _idx_to_price(self, idx: int) -> float:
+        return self.roi_lb + idx * self.tick_size
+
+    def _valid_idx(self, idx: int) -> bool:
+        return 0 <= idx < self.n_levels
+
+    def _recompute_best_bid(self) -> None:
+        nz = np.flatnonzero(self.bid_qty > 0)
+        self.best_bid_idx = int(nz[-1]) if len(nz) > 0 else -1
+
+    def _recompute_best_ask(self) -> None:
+        nz = np.flatnonzero(self.ask_qty > 0)
+        self.best_ask_idx = int(nz[0]) if len(nz) > 0 else -1
 
     # ----------------------------
     # caching
@@ -211,10 +232,23 @@ class OrderBookReplay:
         snap_ts = int(snap_row["timestamp"])
 
         bids, asks = snapshot_row_to_books(snap_row)
-        self.bids = bids
-        self.asks = asks
+
+        self.bid_qty.fill(0.0)
+        self.ask_qty.fill(0.0)
+
+        for p, q in bids.items():
+            idx = self._price_to_idx(float(p))
+            if self._valid_idx(idx):
+                self.bid_qty[idx] = float(q)
+
+        for p, q in asks.items():
+            idx = self._price_to_idx(float(p))
+            if self._valid_idx(idx):
+                self.ask_qty[idx] = float(q)
+
+        self._recompute_best_bid()
+        self._recompute_best_ask()
         self.current_ts = snap_ts
-        self._book_dirty = True
 
         replay_start_idx = int(np.searchsorted(self.exch_ts_arr, snap_ts, side="right"))
         return replay_start_idx
@@ -227,16 +261,18 @@ class OrderBookReplay:
                 break
 
         if snap_ts is None:
-            self.bids.clear()
-            self.asks.clear()
-            self._book_dirty = True
+            self.bid_qty.fill(0.0)
+            self.ask_qty.fill(0.0)
+            self.best_bid_idx = -1
+            self.best_ask_idx = -1
             return 0
 
         snap_start = int(np.searchsorted(self.exch_ts_arr, snap_ts, side="left"))
 
-        self.bids.clear()
-        self.asks.clear()
-        self._book_dirty = True
+        self.bid_qty.fill(0.0)
+        self.ask_qty.fill(0.0)
+        self.best_bid_idx = -1
+        self.best_ask_idx = -1
 
         i = snap_start
         while i < self.n_events:
@@ -259,15 +295,36 @@ class OrderBookReplay:
         price = float(self.price_arr[idx])
         amount = float(self.amount_arr[idx])
 
-        book = self.bids if side_code == 0 else self.asks
+        price_idx = self._price_to_idx(price)
+        if not self._valid_idx(price_idx):
+            self.current_ts = int(self.exch_ts_arr[idx])
+            return
 
-        if amount <= 0.0:
-            book.pop(price, None)
-        else:
-            book[price] = amount
+        if side_code == 0:  # bid
+            self.bid_qty[price_idx] = amount
+
+            if amount > 0:
+                if price_idx > self.best_bid_idx:
+                    self.best_bid_idx = price_idx
+            else:
+                if price_idx == self.best_bid_idx:
+                    while self.best_bid_idx >= 0 and self.bid_qty[self.best_bid_idx] <= 0:
+                        self.best_bid_idx -= 1
+
+        else:  # ask
+            self.ask_qty[price_idx] = amount
+
+            if amount > 0:
+                if self.best_ask_idx < 0 or price_idx < self.best_ask_idx:
+                    self.best_ask_idx = price_idx
+            else:
+                if price_idx == self.best_ask_idx:
+                    while self.best_ask_idx < self.n_levels and self.ask_qty[self.best_ask_idx] <= 0:
+                        self.best_ask_idx += 1
+                    if self.best_ask_idx >= self.n_levels:
+                        self.best_ask_idx = -1
 
         self.current_ts = int(self.exch_ts_arr[idx])
-        self._book_dirty = True
 
     def _apply_trade_idx(self, idx: int) -> None:
         side_code = int(self.side_code_arr[idx])
@@ -305,24 +362,44 @@ class OrderBookReplay:
         imb = signed_vol / denom if denom > 1e-12 else 0.0
         return imb, signed_vol
 
-    def _ensure_top_levels(self) -> None:
-        if not self._book_dirty:
-            return
+    def _collect_top_bids(self) -> tuple[list[float], list[float]]:
+        prices: list[float] = []
+        sizes: list[float] = []
 
-        # O(N log K), better than full sorting when book is deep
-        self._cached_top_bids = heapq.nlargest(
-            self.top_k,
-            self.bids.items(),
-            key=lambda x: x[0],
-        )
-        self._cached_top_asks = heapq.nsmallest(
-            self.top_k,
-            self.asks.items(),
-            key=lambda x: x[0],
-        )
+        idx = self.best_bid_idx
+        while idx >= 0 and len(prices) < self.top_k:
+            qty = float(self.bid_qty[idx])
+            if qty > 0:
+                prices.append(self._idx_to_price(idx))
+                sizes.append(qty)
+            idx -= 1
 
-        # make final output strictly ordered
-        self._cached_top_bids.sort(key=lambda x: x[0], reverse=True)
-        self._cached_top_asks.sort(key=lambda x: x[0])
+        if len(prices) == 0:
+            raise RuntimeError("book is incomplete: no bid levels")
 
-        self._book_dirty = False
+        while len(prices) < self.top_k:
+            prices.append(prices[-1])
+            sizes.append(0.0)
+
+        return prices, sizes
+
+    def _collect_top_asks(self) -> tuple[list[float], list[float]]:
+        prices: list[float] = []
+        sizes: list[float] = []
+
+        idx = self.best_ask_idx
+        while idx >= 0 and idx < self.n_levels and len(prices) < self.top_k:
+            qty = float(self.ask_qty[idx])
+            if qty > 0:
+                prices.append(self._idx_to_price(idx))
+                sizes.append(qty)
+            idx += 1
+
+        if len(prices) == 0:
+            raise RuntimeError("book is incomplete: no ask levels")
+
+        while len(prices) < self.top_k:
+            prices.append(prices[-1])
+            sizes.append(0.0)
+
+        return prices, sizes

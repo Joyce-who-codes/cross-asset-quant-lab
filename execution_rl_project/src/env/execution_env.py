@@ -46,6 +46,9 @@ class ExecutionEnv(gym.Env):
             symbol=asset_cfg["symbol"],
             maker_fee=bt_cfg["maker_fee"],
             taker_fee=bt_cfg["taker_fee"],
+            tick_size=asset_cfg["tick_size"],
+            roi_lb=bt_cfg["roi_lb"],
+            roi_ub=bt_cfg["roi_ub"],
             top_k=5,
         )
 
