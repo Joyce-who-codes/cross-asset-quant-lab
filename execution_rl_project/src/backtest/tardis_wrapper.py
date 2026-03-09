@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Optional
 
 import pandas as pd
 
 from src.backtest.order_book_replay import OrderBookReplay
 from src.data.parse_tardis_csv import load_merged_events
+from src.data.parse_tardis_snapshot import load_snapshot25_csv
 
 
 @dataclass
@@ -29,15 +31,6 @@ class FillInfo:
 
 
 class TardisExecutionWrapper:
-    """
-    Simplified execution simulator on replayed order book.
-
-    Current assumptions:
-    - limit buy at or above best ask is treated as immediate taker fill
-    - passive limit order is stored as one active order
-    - passive fill happens when price crosses or touches, with simple top-of-book rule
-    """
-
     def __init__(
         self,
         book_path: str,
@@ -46,9 +39,11 @@ class TardisExecutionWrapper:
         maker_fee: float,
         taker_fee: float,
         top_k: int = 5,
+        snapshot_path: Optional[str] = None,
     ):
         self.book_path = book_path
         self.trade_path = trade_path
+        self.snapshot_path = snapshot_path
         self.symbol = symbol
         self.maker_fee = maker_fee
         self.taker_fee = taker_fee
@@ -60,6 +55,10 @@ class TardisExecutionWrapper:
             symbol=symbol,
             sort_by="exch_ts",
         )
+        self.snapshots: pd.DataFrame | None = None
+        if snapshot_path is not None:
+            self.snapshots = load_snapshot25_csv(snapshot_path, symbol=symbol)
+
         self.replay = OrderBookReplay(top_k=top_k)
 
         self.position = 0.0
@@ -71,7 +70,7 @@ class TardisExecutionWrapper:
         self.cash = 0.0
         self.active_order = None
 
-        self.replay.reset(self.events, start_idx=start_idx)
+        self.replay.reset(self.events, snapshots=self.snapshots, start_idx=start_idx)
         s = self.replay.get_market_state()
         return self._convert_state(s)
 
@@ -109,7 +108,6 @@ class TardisExecutionWrapper:
         if side != "buy":
             raise NotImplementedError("current MVP only supports buy side")
 
-        # 被动买单：当 best ask <= own price 时认为成交
         if state.best_ask <= price:
             fee = price * qty * self.maker_fee
             self.position += qty
@@ -119,7 +117,6 @@ class TardisExecutionWrapper:
     def place_limit_buy(self, price: float, qty: float) -> None:
         state = self.replay.get_market_state()
 
-        # 过价，直接当 taker fill
         if price >= state.best_ask:
             fee = state.best_ask * qty * self.taker_fee
             self.position += qty
@@ -164,3 +161,6 @@ class TardisExecutionWrapper:
 
     def is_done(self) -> bool:
         return self.replay.is_done()
+
+    def num_events(self) -> int:
+        return len(self.events)

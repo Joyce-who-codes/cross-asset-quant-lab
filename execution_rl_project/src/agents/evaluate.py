@@ -7,13 +7,15 @@ from src.utils.io import load_yaml
 def main() -> None:
     env_cfg = load_yaml("configs/env.yaml")
 
-    book_path = "data/raw/tardis/BTCUSDT/incremental_book_L2/BTCUSDT.csv"
-    trade_path = "data/raw/tardis/BTCUSDT/trades/BTCUSDT.csv"
+    book_path = "/home/joyce/test.csv"
+    trade_path = "/home/joyce/test_trades.csv"
+    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/test_book.csv"
 
     env = ExecutionEnv(
         env_cfg=env_cfg,
         book_path=book_path,
         trade_path=trade_path,
+        snapshot_path=snapshot_path,
     )
     model = PPO.load("results/checkpoints/ppo_execution_agent")
 

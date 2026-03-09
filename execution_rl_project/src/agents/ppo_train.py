@@ -6,12 +6,13 @@ from src.utils.io import ensure_dir, load_yaml
 from src.utils.seed import set_seed
 
 
-def make_env(env_cfg: dict, book_path: str, trade_path: str):
+def make_env(env_cfg: dict, book_path: str, trade_path: str, snapshot_path: str | None):
     def _fn():
         return ExecutionEnv(
             env_cfg=env_cfg,
             book_path=book_path,
             trade_path=trade_path,
+            snapshot_path=snapshot_path,
         )
     return _fn
 
@@ -23,11 +24,12 @@ def main() -> None:
 
     model_dir = ensure_dir(train_cfg["model_dir"])
 
-    book_path = "data/raw/tardis/BTCUSDT/incremental_book_L2/BTCUSDT.csv"
-    trade_path = "data/raw/tardis/BTCUSDT/trades/BTCUSDT.csv"
+    book_path = "/home/joyce/test.csv"
+    trade_path = "/home/joyce/test_trades.csv"
+    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/test_book.csv"
 
     vec_env = make_vec_env(
-        make_env(env_cfg, book_path, trade_path),
+        make_env(env_cfg, book_path, trade_path, snapshot_path),
         n_envs=1,
         seed=train_cfg["seed"],
     )

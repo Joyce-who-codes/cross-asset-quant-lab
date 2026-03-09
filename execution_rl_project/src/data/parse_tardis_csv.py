@@ -61,11 +61,12 @@ def load_incremental_book_csv(
     df["local_timestamp"] = df["local_timestamp"].astype("int64")
     df["is_snapshot"] = _normalize_bool_col(df, "is_snapshot")
     df["side"] = df["side"].astype(str).str.lower()
-    df["price"] = df["price"].astype(float)
-    df["amount"] = df["amount"].astype(float)
+    df["price"] = pd.to_numeric(df["price"], errors="coerce").astype(float)
+    df["amount"] = pd.to_numeric(df["amount"], errors="coerce").astype(float)
 
     df["event_type"] = "book"
     df["trade_id"] = pd.NA
+
     df = df.rename(
         columns={
             "timestamp": "exch_ts",
@@ -108,11 +109,12 @@ def load_trades_csv(
     df["local_timestamp"] = df["local_timestamp"].astype("int64")
     df["id"] = df["id"].astype("int64")
     df["side"] = df["side"].astype(str).str.lower()
-    df["price"] = df["price"].astype(float)
-    df["amount"] = df["amount"].astype(float)
+    df["price"] = pd.to_numeric(df["price"], errors="coerce").astype(float)
+    df["amount"] = pd.to_numeric(df["amount"], errors="coerce").astype(float)
 
     df["event_type"] = "trade"
     df["is_snapshot"] = False
+
     df = df.rename(
         columns={
             "timestamp": "exch_ts",
@@ -137,6 +139,31 @@ def load_trades_csv(
     ].reset_index(drop=True)
 
 
+def _add_encoded_columns(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+
+    out["event_code"] = (
+        out["event_type"]
+        .map({"book": 0, "trade": 1})
+        .astype("int8")
+    )
+
+    out["side_code"] = (
+        out["side"]
+        .map(
+            {
+                "bid": 0,
+                "ask": 1,
+                "buy": 2,
+                "sell": 3,
+            }
+        )
+        .astype("int8")
+    )
+
+    return out
+
+
 def merge_book_and_trades(
     book_df: pd.DataFrame,
     trades_df: pd.DataFrame,
@@ -147,7 +174,7 @@ def merge_book_and_trades(
 
     df = pd.concat([book_df, trades_df], axis=0, ignore_index=True)
 
-    # book 优先于 trade，避免同一时刻 book 尚未更新就先读到 trade
+    # 同一时刻先处理 book，再处理 trade
     event_priority = {"book": 0, "trade": 1}
     df["_event_priority"] = df["event_type"].map(event_priority).fillna(9)
 
@@ -156,7 +183,10 @@ def merge_book_and_trades(
         kind="mergesort",
     ).reset_index(drop=True)
 
-    return df.drop(columns=["_event_priority"])
+    df = df.drop(columns=["_event_priority"])
+    df = _add_encoded_columns(df)
+
+    return df
 
 
 def load_merged_events(

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import random
+
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
@@ -22,7 +24,13 @@ CANCEL_ALL = 4
 class ExecutionEnv(gym.Env):
     metadata = {"render_modes": []}
 
-    def __init__(self, env_cfg: dict, book_path: str, trade_path: str):
+    def __init__(
+        self,
+        env_cfg: dict,
+        book_path: str,
+        trade_path: str,
+        snapshot_path: str | None = None,
+    ):
         super().__init__()
         self.cfg = env_cfg
 
@@ -34,6 +42,7 @@ class ExecutionEnv(gym.Env):
         self.wrapper = TardisExecutionWrapper(
             book_path=book_path,
             trade_path=trade_path,
+            snapshot_path=snapshot_path,
             symbol=asset_cfg["symbol"],
             maker_fee=bt_cfg["maker_fee"],
             taker_fee=bt_cfg["taker_fee"],
@@ -47,11 +56,9 @@ class ExecutionEnv(gym.Env):
 
         self.lambda_wait = rw_cfg["lambda_wait"]
         self.lambda_terminal_remain = rw_cfg["lambda_terminal_remain"]
-        self.lambda_cancel = rw_cfg["lambda_cancel"]
 
         self.max_steps = int(self.horizon_sec / self.step_sec)
         self.current_step = 0
-        self.reference_price = 0.0
         self.filled_qty = 0.0
 
         obs_dim = 4 + 5 + 5 + 5 + 5 + 5 + 6
@@ -62,6 +69,10 @@ class ExecutionEnv(gym.Env):
             shape=(obs_dim,),
             dtype=np.float32,
         )
+
+    def _sample_start_idx(self) -> int:
+        usable = max(1, self.wrapper.num_events() - 5000)
+        return random.randint(0, usable - 1)
 
     def _get_obs(self) -> np.ndarray:
         state = self.wrapper.get_market_state()
@@ -89,22 +100,27 @@ class ExecutionEnv(gym.Env):
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
-        start_idx = 0 if options is None else options.get("start_idx", 0)
 
-        state = self.wrapper.reset(start_idx=start_idx)
+        if options is not None and "start_idx" in options:
+            start_idx = int(options["start_idx"])
+        else:
+            start_idx = self._sample_start_idx()
+
+        self.wrapper.reset(start_idx=start_idx)
         self.current_step = 0
         self.filled_qty = 0.0
-        self.reference_price = 0.5 * (state.best_bid + state.best_ask)
 
         obs = self._get_obs()
-        info = {"reference_price": self.reference_price}
+        info = {
+            "start_idx": start_idx,
+        }
         return obs, info
 
     def step(self, action: int):
         state = self.wrapper.get_market_state()
         best_bid = state.best_bid
+        decision_mid = 0.5 * (state.best_bid + state.best_ask)
 
-        did_cancel = False
         filled_now = 0.0
         avg_fill_price = 0.0
 
@@ -128,13 +144,14 @@ class ExecutionEnv(gym.Env):
             self.filled_qty += filled_now
         elif action == CANCEL_ALL:
             self.wrapper.cancel_all()
-            did_cancel = True
 
         self.wrapper.step_time(self.step_sec)
         self.current_step += 1
 
         new_pos = self.wrapper.get_position()
         delta_pos = new_pos - prev_pos
+
+        # 被动挂单在 step_time 期间成交
         if delta_pos > 1e-12 and filled_now <= 1e-12:
             filled_now = delta_pos
             avg_fill_price = best_bid
@@ -143,13 +160,12 @@ class ExecutionEnv(gym.Env):
         remaining_qty = max(0.0, self.target_qty - self.filled_qty)
 
         reward = compute_step_reward(
-            reference_price=self.reference_price,
+            decision_mid_price=decision_mid,
             filled_qty=filled_now,
             avg_fill_price=avg_fill_price,
             remaining_qty=remaining_qty,
-            did_cancel=did_cancel,
+            target_qty=self.target_qty,
             lambda_wait=self.lambda_wait,
-            lambda_cancel=self.lambda_cancel,
         )
 
         terminated = remaining_qty <= 1e-12
@@ -158,6 +174,7 @@ class ExecutionEnv(gym.Env):
         if truncated and not terminated:
             reward += compute_terminal_penalty(
                 remaining_qty=remaining_qty,
+                target_qty=self.target_qty,
                 lambda_terminal_remain=self.lambda_terminal_remain,
             )
 

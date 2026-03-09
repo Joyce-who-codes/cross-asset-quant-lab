@@ -2,30 +2,35 @@ from __future__ import annotations
 
 
 def compute_step_reward(
-    reference_price: float,
+    decision_mid_price: float,
     filled_qty: float,
     avg_fill_price: float,
     remaining_qty: float,
-    did_cancel: bool,
+    target_qty: float,
     lambda_wait: float,
-    lambda_cancel: float,
 ) -> float:
     reward = 0.0
 
-    if filled_qty > 0:
-        exec_cost = (avg_fill_price - reference_price) * filled_qty
-        reward -= exec_cost
+    qty_scale = max(target_qty, 1e-12)
+    fill_ratio = max(0.0, filled_qty) / qty_scale
+    remaining_ratio = max(0.0, remaining_qty) / qty_scale
 
-    reward -= lambda_wait * remaining_qty
+    # 只在成交时按“这一步买得贵不贵”打分
+    if filled_qty > 0 and decision_mid_price > 0:
+        exec_cost_ratio = (avg_fill_price - decision_mid_price) / decision_mid_price
+        reward -= exec_cost_ratio * fill_ratio
 
-    if did_cancel:
-        reward -= lambda_cancel
+    # 轻微等待惩罚
+    reward -= lambda_wait * remaining_ratio
 
     return reward
 
 
 def compute_terminal_penalty(
     remaining_qty: float,
+    target_qty: float,
     lambda_terminal_remain: float,
 ) -> float:
-    return -lambda_terminal_remain * (remaining_qty ** 2)
+    qty_scale = max(target_qty, 1e-12)
+    remaining_ratio = max(0.0, remaining_qty) / qty_scale
+    return -lambda_terminal_remain * remaining_ratio

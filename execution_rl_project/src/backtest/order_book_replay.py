@@ -2,10 +2,13 @@ from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass
-from typing import Deque
+from typing import Deque, Optional
+import heapq
 
 import numpy as np
 import pandas as pd
+
+from src.data.parse_tardis_snapshot import snapshot_row_to_books
 
 
 @dataclass
@@ -23,12 +26,14 @@ class ReplayMarketState:
 
 class OrderBookReplay:
     """
-    Lightweight L2 replay engine.
+    Faster lightweight L2 replay engine.
 
-    Assumptions:
-    - book event amount is the new absolute size at (side, price)
-    - amount == 0 means delete that level
-    - trade events do NOT mutate the book directly
+    Main optimizations:
+    - preload event columns to numpy arrays
+    - integer-coded event/side arrays
+    - binary search snapshot/event bootstrap points
+    - top-k cache with dirty flag
+    - O(1) rolling trade feature updates
     """
 
     def __init__(self, top_k: int = 5, trade_buffer_size: int = 200):
@@ -37,146 +42,93 @@ class OrderBookReplay:
 
         self.bids: dict[float, float] = {}
         self.asks: dict[float, float] = {}
-        self.trade_buffer: Deque[tuple[int, float]] = deque(maxlen=trade_buffer_size)
+
+        # store signed trade amounts
+        self.trade_buffer: Deque[float] = deque(maxlen=trade_buffer_size)
+        self.buy_vol = 0.0
+        self.sell_vol = 0.0
 
         self.current_idx = 0
-        self.events: pd.DataFrame | None = None
-        self.current_ts: int = 0
+        self.current_ts = 0
 
-    def reset(self, events: pd.DataFrame, start_idx: int = 0) -> None:
+        self.events: pd.DataFrame | None = None
+        self.snapshots: pd.DataFrame | None = None
+
+        self.n_events = 0
+        self.ev_code_arr: np.ndarray | None = None
+        self.exch_ts_arr: np.ndarray | None = None
+        self.local_ts_arr: np.ndarray | None = None
+        self.is_snapshot_arr: np.ndarray | None = None
+        self.side_code_arr: np.ndarray | None = None
+        self.price_arr: np.ndarray | None = None
+        self.amount_arr: np.ndarray | None = None
+
+        self.snapshot_ts_arr: np.ndarray | None = None
+
+        self._cached_top_bids: list[tuple[float, float]] = []
+        self._cached_top_asks: list[tuple[float, float]] = []
+        self._book_dirty = True
+
+    # ----------------------------
+    # public api
+    # ----------------------------
+    def reset(
+        self,
+        events: pd.DataFrame,
+        snapshots: Optional[pd.DataFrame] = None,
+        start_idx: int = 0,
+    ) -> None:
         if len(events) == 0:
             raise ValueError("events is empty")
 
-        self.events = events.reset_index(drop=True)
+        if self.events is not events:
+            self.events = events.reset_index(drop=True)
+            self._cache_event_arrays(self.events)
+
+        if snapshots is not None and self.snapshots is not snapshots:
+            self.snapshots = snapshots.reset_index(drop=True)
+            self._cache_snapshot_arrays(self.snapshots)
+        elif snapshots is None:
+            self.snapshots = None
+            self.snapshot_ts_arr = None
+
         self.current_idx = 0
-        self.current_ts = int(self.events.iloc[0]["exch_ts"])
+        self.current_ts = int(self.exch_ts_arr[0])
+
         self.bids.clear()
         self.asks.clear()
+
         self.trade_buffer.clear()
+        self.buy_vol = 0.0
+        self.sell_vol = 0.0
+
+        self._book_dirty = True
+        self._cached_top_bids = []
+        self._cached_top_asks = []
 
         self._bootstrap_book(start_idx=start_idx)
 
-    def _bootstrap_book(self, start_idx: int) -> None:
-        assert self.events is not None
-
-        start_idx = max(0, min(start_idx, len(self.events) - 1))
-
-        snap_ts = None
-        for i in range(start_idx, -1, -1):
-            row = self.events.iloc[i]
-            if row["event_type"] == "book" and bool(row["is_snapshot"]):
-                snap_ts = int(row["exch_ts"])
-                break
-
-        if snap_ts is None:
-            # 没找到 snapshot，就从 0 累积到 start_idx
-            for i in range(0, start_idx + 1):
-                self._apply_event(self.events.iloc[i])
-            self.current_idx = start_idx + 1
+    def step_until_ts(self, target_exch_ts: int) -> None:
+        if self.n_events == 0:
             return
 
-        # 找到这一整个 snapshot 批次的起点
-        snap_start = 0
-        for i in range(start_idx, -1, -1):
-            row = self.events.iloc[i]
-            if (
-                row["event_type"] == "book"
-                and bool(row["is_snapshot"])
-                and int(row["exch_ts"]) == snap_ts
-            ):
-                snap_start = i
-            elif int(row["exch_ts"]) < snap_ts:
-                break
+        idx = self.current_idx
+        exch_ts_arr = self.exch_ts_arr
 
-        # 先清空，再灌入 snapshot batch
-        self.bids.clear()
-        self.asks.clear()
+        while idx < self.n_events and int(exch_ts_arr[idx]) <= target_exch_ts:
+            self._apply_event_idx(idx)
+            idx += 1
 
-        i = snap_start
-        while i < len(self.events):
-            row = self.events.iloc[i]
-            if not (
-                row["event_type"] == "book"
-                and bool(row["is_snapshot"])
-                and int(row["exch_ts"]) == snap_ts
-            ):
-                break
-            self._apply_book_event(row)
-            i += 1
-
-        # 再从 snapshot 之后推进到 start_idx
-        for j in range(i, start_idx + 1):
-            self._apply_event(self.events.iloc[j])
-
-        self.current_idx = start_idx + 1
-
-    def _apply_book_event(self, row: pd.Series) -> None:
-        side = str(row["side"]).lower()
-        price = float(row["price"])
-        amount = float(row["amount"])
-
-        book = self.bids if side == "bid" else self.asks
-
-        if amount <= 0:
-            book.pop(price, None)
-        else:
-            book[price] = amount
-
-        self.current_ts = int(row["exch_ts"])
-
-    def _apply_trade_event(self, row: pd.Series) -> None:
-        side = str(row["side"]).lower()
-        amount = float(row["amount"])
-        sign = 1.0 if side == "buy" else -1.0
-        self.trade_buffer.append((int(row["exch_ts"]), sign * amount))
-        self.current_ts = int(row["exch_ts"])
-
-    def _apply_event(self, row: pd.Series) -> None:
-        if row["event_type"] == "book":
-            self._apply_book_event(row)
-        elif row["event_type"] == "trade":
-            self._apply_trade_event(row)
-
-    def step_n_events(self, n_events: int = 1) -> None:
-        assert self.events is not None
-        end_idx = min(self.current_idx + n_events, len(self.events))
-        for i in range(self.current_idx, end_idx):
-            self._apply_event(self.events.iloc[i])
-        self.current_idx = end_idx
-
-    def step_until_ts(self, target_exch_ts: int) -> None:
-        assert self.events is not None
-        while self.current_idx < len(self.events):
-            row = self.events.iloc[self.current_idx]
-            if int(row["exch_ts"]) > target_exch_ts:
-                break
-            self._apply_event(row)
-            self.current_idx += 1
+        self.current_idx = idx
 
     def is_done(self) -> bool:
-        assert self.events is not None
-        return self.current_idx >= len(self.events)
-
-    def _top_bids(self) -> list[tuple[float, float]]:
-        return sorted(self.bids.items(), key=lambda x: x[0], reverse=True)[: self.top_k]
-
-    def _top_asks(self) -> list[tuple[float, float]]:
-        return sorted(self.asks.items(), key=lambda x: x[0])[: self.top_k]
-
-    def _trade_features(self) -> tuple[float, float]:
-        if not self.trade_buffer:
-            return 0.0, 0.0
-
-        signed_vol = float(sum(x[1] for x in self.trade_buffer))
-        buy_vol = float(sum(max(x[1], 0.0) for x in self.trade_buffer))
-        sell_vol = float(sum(max(-x[1], 0.0) for x in self.trade_buffer))
-        denom = buy_vol + sell_vol
-        imb = (buy_vol - sell_vol) / denom if denom > 1e-12 else 0.0
-        return imb, signed_vol
+        return self.current_idx >= self.n_events
 
     def get_market_state(self) -> ReplayMarketState:
-        top_bids = self._top_bids()
-        top_asks = self._top_asks()
+        self._ensure_top_levels()
+
+        top_bids = self._cached_top_bids
+        top_asks = self._cached_top_asks
 
         if not top_bids or not top_asks:
             raise RuntimeError("book is incomplete: missing bids or asks")
@@ -202,7 +154,175 @@ class OrderBookReplay:
             bid_sizes=bid_sizes,
             ask_prices=ask_prices,
             ask_sizes=ask_sizes,
-            timestamp_ns=int(self.current_ts * 1000),  # microseconds -> ns
+            timestamp_ns=int(self.current_ts * 1000),  # us -> ns
             recent_trade_imbalance=trade_imb,
             recent_signed_volume=signed_vol,
         )
+
+    # ----------------------------
+    # caching
+    # ----------------------------
+    def _cache_event_arrays(self, events: pd.DataFrame) -> None:
+        self.n_events = len(events)
+
+        self.ev_code_arr = events["event_code"].to_numpy(dtype=np.int8, copy=False)
+        self.exch_ts_arr = events["exch_ts"].to_numpy(dtype=np.int64, copy=False)
+        self.local_ts_arr = events["local_ts"].to_numpy(dtype=np.int64, copy=False)
+        self.is_snapshot_arr = events["is_snapshot"].to_numpy(dtype=bool, copy=False)
+        self.side_code_arr = events["side_code"].to_numpy(dtype=np.int8, copy=False)
+        self.price_arr = events["price"].to_numpy(dtype=np.float64, copy=False)
+        self.amount_arr = events["amount"].to_numpy(dtype=np.float64, copy=False)
+
+    def _cache_snapshot_arrays(self, snapshots: pd.DataFrame) -> None:
+        self.snapshot_ts_arr = snapshots["timestamp"].to_numpy(dtype=np.int64, copy=False)
+
+    # ----------------------------
+    # bootstrap
+    # ----------------------------
+    def _bootstrap_book(self, start_idx: int) -> None:
+        start_idx = max(0, min(start_idx, self.n_events - 1))
+        start_ts = int(self.exch_ts_arr[start_idx])
+
+        if (
+            self.snapshots is not None
+            and self.snapshot_ts_arr is not None
+            and len(self.snapshot_ts_arr) > 0
+        ):
+            replay_start_idx = self._bootstrap_from_snapshot25(start_ts)
+            for j in range(replay_start_idx, start_idx + 1):
+                self._apply_event_idx(j)
+            self.current_idx = start_idx + 1
+            return
+
+        replay_start_idx = self._bootstrap_from_embedded_snapshot(start_idx)
+        for j in range(replay_start_idx, start_idx + 1):
+            self._apply_event_idx(j)
+        self.current_idx = start_idx + 1
+
+    def _bootstrap_from_snapshot25(self, start_ts: int) -> int:
+        assert self.snapshots is not None
+        assert self.snapshot_ts_arr is not None
+
+        pos = np.searchsorted(self.snapshot_ts_arr, start_ts, side="right") - 1
+        if pos < 0:
+            return 0
+
+        snap_row = self.snapshots.iloc[int(pos)]
+        snap_ts = int(snap_row["timestamp"])
+
+        bids, asks = snapshot_row_to_books(snap_row)
+        self.bids = bids
+        self.asks = asks
+        self.current_ts = snap_ts
+        self._book_dirty = True
+
+        replay_start_idx = int(np.searchsorted(self.exch_ts_arr, snap_ts, side="right"))
+        return replay_start_idx
+
+    def _bootstrap_from_embedded_snapshot(self, start_idx: int) -> int:
+        snap_ts = None
+        for i in range(start_idx, -1, -1):
+            if self.ev_code_arr[i] == 0 and bool(self.is_snapshot_arr[i]):
+                snap_ts = int(self.exch_ts_arr[i])
+                break
+
+        if snap_ts is None:
+            self.bids.clear()
+            self.asks.clear()
+            self._book_dirty = True
+            return 0
+
+        snap_start = int(np.searchsorted(self.exch_ts_arr, snap_ts, side="left"))
+
+        self.bids.clear()
+        self.asks.clear()
+        self._book_dirty = True
+
+        i = snap_start
+        while i < self.n_events:
+            if not (
+                self.ev_code_arr[i] == 0
+                and bool(self.is_snapshot_arr[i])
+                and int(self.exch_ts_arr[i]) == snap_ts
+            ):
+                break
+            self._apply_book_idx(i)
+            i += 1
+
+        return i
+
+    # ----------------------------
+    # apply events
+    # ----------------------------
+    def _apply_book_idx(self, idx: int) -> None:
+        side_code = int(self.side_code_arr[idx])
+        price = float(self.price_arr[idx])
+        amount = float(self.amount_arr[idx])
+
+        book = self.bids if side_code == 0 else self.asks
+
+        if amount <= 0.0:
+            book.pop(price, None)
+        else:
+            book[price] = amount
+
+        self.current_ts = int(self.exch_ts_arr[idx])
+        self._book_dirty = True
+
+    def _apply_trade_idx(self, idx: int) -> None:
+        side_code = int(self.side_code_arr[idx])
+        amount = float(self.amount_arr[idx])
+
+        sign_amount = amount if side_code == 2 else -amount
+
+        if len(self.trade_buffer) == self.trade_buffer_size:
+            old_val = self.trade_buffer.popleft()
+            if old_val > 0:
+                self.buy_vol -= old_val
+            else:
+                self.sell_vol -= (-old_val)
+
+        self.trade_buffer.append(sign_amount)
+        if sign_amount > 0:
+            self.buy_vol += sign_amount
+        else:
+            self.sell_vol += -sign_amount
+
+        self.current_ts = int(self.exch_ts_arr[idx])
+
+    def _apply_event_idx(self, idx: int) -> None:
+        if self.ev_code_arr[idx] == 0:
+            self._apply_book_idx(idx)
+        else:
+            self._apply_trade_idx(idx)
+
+    # ----------------------------
+    # features
+    # ----------------------------
+    def _trade_features(self) -> tuple[float, float]:
+        signed_vol = self.buy_vol - self.sell_vol
+        denom = self.buy_vol + self.sell_vol
+        imb = signed_vol / denom if denom > 1e-12 else 0.0
+        return imb, signed_vol
+
+    def _ensure_top_levels(self) -> None:
+        if not self._book_dirty:
+            return
+
+        # O(N log K), better than full sorting when book is deep
+        self._cached_top_bids = heapq.nlargest(
+            self.top_k,
+            self.bids.items(),
+            key=lambda x: x[0],
+        )
+        self._cached_top_asks = heapq.nsmallest(
+            self.top_k,
+            self.asks.items(),
+            key=lambda x: x[0],
+        )
+
+        # make final output strictly ordered
+        self._cached_top_bids.sort(key=lambda x: x[0], reverse=True)
+        self._cached_top_asks.sort(key=lambda x: x[0])
+
+        self._book_dirty = False
