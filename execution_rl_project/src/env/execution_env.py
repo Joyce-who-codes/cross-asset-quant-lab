@@ -12,7 +12,7 @@ from src.features.lob_features import (
     compute_basic_lob_features,
 )
 from src.env.reward import compute_step_reward, compute_terminal_penalty
-
+from src.microalpha.alpha_model import OnlineMicroAlpha
 
 HOLD = 0
 PLACE_BID1 = 1
@@ -59,12 +59,17 @@ class ExecutionEnv(gym.Env):
 
         self.lambda_wait = rw_cfg["lambda_wait"]
         self.lambda_terminal_remain = rw_cfg["lambda_terminal_remain"]
+        self.exec_cost_coef = rw_cfg["exec_cost_coef"]
+        self.taker_penalty_coef = rw_cfg["taker_penalty_coef"]
 
         self.max_steps = int(self.horizon_sec / self.step_sec)
         self.current_step = 0
         self.filled_qty = 0.0
-
-        obs_dim = 4 + 5 + 5 + 5 + 5 + 5 + 6
+        self.alpha_model = OnlineMicroAlpha(
+            model_path="results/microalpha/ridge_alpha.pkl",
+            alpha_scale=10000.0,
+        )
+        obs_dim = 4 + 5 + 5 + 5 + 5 + 5 + 6+1
         self.action_space = spaces.Discrete(5)
         self.observation_space = spaces.Box(
             low=-np.inf,
@@ -99,8 +104,11 @@ class ExecutionEnv(gym.Env):
             active_order_price_offset=self.wrapper.active_order_price_offset(),
         )
 
-        return np.concatenate([lob_feats, exec_feats], axis=0).astype(np.float32)
+        alpha_pred = self.alpha_model.predict(state)
+        alpha_feat = np.array([alpha_pred], dtype=np.float32)
 
+        return np.concatenate([lob_feats, exec_feats, alpha_feat], axis=0).astype(np.float32)
+    
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
 
@@ -112,7 +120,7 @@ class ExecutionEnv(gym.Env):
         self.wrapper.reset(start_idx=start_idx)
         self.current_step = 0
         self.filled_qty = 0.0
-
+        self.alpha_model.reset()
         obs = self._get_obs()
         info = {
             "start_idx": start_idx,
@@ -126,25 +134,31 @@ class ExecutionEnv(gym.Env):
 
         filled_now = 0.0
         avg_fill_price = 0.0
+        is_taker_fill = False
 
         prev_pos = self.wrapper.get_position()
         remaining_qty = max(0.0, self.target_qty - self.filled_qty)
 
         if action == HOLD:
             pass
+
         elif action == PLACE_BID1 and remaining_qty > 0:
             qty = min(self.market_clip_qty, remaining_qty)
             self.wrapper.place_limit_buy(price=best_bid, qty=qty)
+
         elif action == PLACE_BID2 and remaining_qty > 0:
             qty = min(self.market_clip_qty, remaining_qty)
             tick = self.cfg["asset"]["tick_size"]
             self.wrapper.place_limit_buy(price=best_bid - tick, qty=qty)
+
         elif action == MARKET_BUY_SMALL and remaining_qty > 0:
             qty = min(self.market_clip_qty, remaining_qty)
             fill = self.wrapper.place_market_buy(qty=qty)
             filled_now = fill.filled_qty
             avg_fill_price = fill.avg_fill_price
             self.filled_qty += filled_now
+            is_taker_fill = True
+
         elif action == CANCEL_ALL:
             self.wrapper.cancel_all()
 
@@ -157,10 +171,13 @@ class ExecutionEnv(gym.Env):
         # 被动挂单在 step_time 期间成交
         if delta_pos > 1e-12 and filled_now <= 1e-12:
             filled_now = delta_pos
+            # 这里仍然用 best_bid 作为一个简化近似
             avg_fill_price = best_bid
             self.filled_qty = new_pos
+            is_taker_fill = False
 
         remaining_qty = max(0.0, self.target_qty - self.filled_qty)
+        urgency = ((self.current_step + 1) / max(self.max_steps, 1)) ** 2
 
         reward = compute_step_reward(
             decision_mid_price=decision_mid,
@@ -168,7 +185,11 @@ class ExecutionEnv(gym.Env):
             avg_fill_price=avg_fill_price,
             remaining_qty=remaining_qty,
             target_qty=self.target_qty,
+            urgency=urgency,
             lambda_wait=self.lambda_wait,
+            exec_cost_coef=self.exec_cost_coef,
+            taker_penalty_coef=self.taker_penalty_coef,
+            is_taker_fill=is_taker_fill,
         )
 
         terminated = remaining_qty <= 1e-12

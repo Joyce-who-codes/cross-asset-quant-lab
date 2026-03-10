@@ -1,0 +1,5 @@
+factors:
+  - name: funding_momentum_24h
+    expression: ts_mean(funding_rate, 24)
+  - name: oi_change_6h
+    expression: open_interest / delay(open_interest, 6) - 1

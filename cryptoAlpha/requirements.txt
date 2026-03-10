@@ -1,0 +1,11 @@
+pandas
+polars
+numpy
+pyarrow
+pyyaml
+scikit-learn
+lightgbm
+matplotlib
+seaborn
+jupyter
+notebook

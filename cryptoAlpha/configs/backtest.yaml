@@ -1,0 +1,4 @@
+rebalance_frequency: 1d
+transaction_cost_bps: 5
+max_gross_leverage: 1.0
+output_dir: outputs/backtests

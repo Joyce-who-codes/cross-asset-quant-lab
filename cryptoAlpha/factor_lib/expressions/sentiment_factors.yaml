@@ -1,0 +1,5 @@
+factors:
+  - name: mention_count_zscore_24h
+    expression: zscore(mention_count, 24)
+  - name: negative_sentiment_ratio_ma_12h
+    expression: ts_mean(negative_sentiment_ratio, 12)

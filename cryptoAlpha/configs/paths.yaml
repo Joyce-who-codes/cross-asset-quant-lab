@@ -1,0 +1,13 @@
+sources:
+  coinglass_root: /data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL
+  coingecko_root: /data/qr/ALTERNATIVE_DATA/COINGECKO_v3/NORMAL
+  cryptoracle_root: /home/joyce/cryptoracle/cryptoracle_data/NORMAL
+
+defaults:
+  frequency: 1h
+  exchange: Binance
+
+storage:
+  cache_dir: data/cache
+  feature_dir: data/features
+  label_dir: data/labels

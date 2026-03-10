@@ -1,0 +1,6 @@
+enabled_factor_sets:
+  - price_volume_factors
+  - derivatives_factors
+  - sentiment_factors
+factor_library_root: factor_lib/expressions
+output_factor_table: data/features/factor_panel.parquet

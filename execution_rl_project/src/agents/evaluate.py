@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections import Counter
 from stable_baselines3 import PPO
 
@@ -27,30 +29,81 @@ def main() -> None:
         trade_path=trade_path,
         snapshot_path=snapshot_path,
     )
-    model = PPO.load("results/checkpoints/ppo_execution_agent")
+    model = PPO.load("/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints/ppo_execution_agent_with_alpha_reward2.zip")
 
     obs, info = env.reset()
     done = False
     total_reward = 0.0
     action_counter = Counter()
+    trace_rows = []
+
+    step_idx = 0
+    prev_filled = 0.0
 
     while not done:
+        state_before = env.wrapper.get_market_state()
+
         action, _ = model.predict(obs, deterministic=True)
         action = int(action)
-        action_counter[action] += 1
+        action_name = ACTION_NAME[action]
+        action_counter[action_name] += 1
 
         obs, reward, terminated, truncated, step_info = env.step(action)
-        total_reward += reward
         done = terminated or truncated
+        total_reward += reward
 
-    print("=== Evaluation ===")
-    print("total_reward:", total_reward)
-    print("filled_qty:", step_info["filled_qty"])
-    print("remaining_qty:", step_info["remaining_qty"])
-    print("equity:", step_info["equity"])
-    print("action counts:")
-    for k, v in sorted(action_counter.items()):
-        print(f"  {ACTION_NAME[k]}: {v}")
+        state_after = env.wrapper.get_market_state()
+
+        filled_qty = float(step_info["filled_qty"])
+        remaining_qty = float(step_info["remaining_qty"])
+        delta_fill = filled_qty - prev_filled
+        prev_filled = filled_qty
+
+        trace_rows.append(
+            {
+                "step": step_idx,
+                "action": action_name,
+                "best_bid_before": round(state_before.best_bid, 4),
+                "best_ask_before": round(state_before.best_ask, 4),
+                "best_bid_after": round(state_after.best_bid, 4),
+                "best_ask_after": round(state_after.best_ask, 4),
+                "reward": round(float(reward), 6),
+                "delta_fill": round(delta_fill, 6),
+                "cum_filled": round(filled_qty, 6),
+                "remaining": round(remaining_qty, 6),
+                "done": done,
+            }
+        )
+
+        step_idx += 1
+
+    print("=== Evaluation Summary ===")
+    print("total_reward:", round(total_reward, 6))
+    print("filled_qty:", round(float(step_info["filled_qty"]), 6))
+    print("remaining_qty:", round(float(step_info["remaining_qty"]), 6))
+    print("equity:", round(float(step_info["equity"]), 6))
+    print()
+
+    print("=== Action Counts ===")
+    total_actions = sum(action_counter.values())
+    for action_name, count in action_counter.items():
+        pct = 100.0 * count / max(total_actions, 1)
+        print(f"{action_name:18s} {count:4d}  ({pct:6.2f}%)")
+    print()
+
+    print("=== Step Trace ===")
+    for row in trace_rows:
+        print(
+            f"step={row['step']:02d} | "
+            f"action={row['action']:16s} | "
+            f"bid/ask_before=({row['best_bid_before']:.2f}, {row['best_ask_before']:.2f}) | "
+            f"bid/ask_after=({row['best_bid_after']:.2f}, {row['best_ask_after']:.2f}) | "
+            f"reward={row['reward']:+.6f} | "
+            f"delta_fill={row['delta_fill']:.6f} | "
+            f"cum_filled={row['cum_filled']:.6f} | "
+            f"remaining={row['remaining']:.6f} | "
+            f"done={row['done']}"
+        )
 
 
 if __name__ == "__main__":

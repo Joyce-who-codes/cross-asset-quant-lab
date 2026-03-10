@@ -1,0 +1,6 @@
+raw_data_root: data/raw
+processed_data_root: data/processed
+feature_data_root: data/features
+label_data_root: data/labels
+cache_root: data/cache
+frequency: 1h

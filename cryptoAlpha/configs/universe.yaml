@@ -1,0 +1,25 @@
+TOP20_SYMBOLS = [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BNBUSDT",
+    "XRPUSDT",
+    "SOLUSDT",
+    "DOGEUSDT",
+    "ADAUSDT",
+    "TRXUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "AVAXUSDT",
+    "MATICUSDT",
+    "DOTUSDT",
+    "BCHUSDT",
+    "XLMUSDT",
+    "ATOMUSDT",
+    "NEARUSDT",
+    "ETCUSDT",
+    "FILUSDT",
+    "APTUSDT",
+]
+
+TOP100_SYMBOLS = []
+    # 你后面给我名单后替换

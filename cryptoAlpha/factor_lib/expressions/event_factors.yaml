@@ -1,0 +1,5 @@
+factors:
+  - name: listing_event_decay
+    expression: event_decay(listing_event, 48)
+  - name: unlock_event_decay
+    expression: event_decay(token_unlock_event, 72)

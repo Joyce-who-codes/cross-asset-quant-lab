@@ -1,0 +1,4 @@
+model_type: lightgbm
+label_column: forward_return_24h
+feature_table: data/features/factor_panel.parquet
+train_output_dir: outputs/model_ckpt

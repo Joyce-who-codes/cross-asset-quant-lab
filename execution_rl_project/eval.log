@@ -1,0 +1,7 @@
+=== Evaluation ===
+total_reward: -0.020000573263872643
+filled_qty: 0.05
+remaining_qty: 0.0
+equity: -2.543998000001011
+action counts:
+  MARKET_BUY_SMALL: 5

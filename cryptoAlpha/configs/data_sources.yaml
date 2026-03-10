@@ -1,0 +1,11 @@
+coinglass:
+  enabled: true
+  root: /data/qr/ALTERNATIVE_DATA/COINGLASS_v5/NORMAL
+
+coingecko:
+  enabled: true
+  root: /data/qr/ALTERNATIVE_DATA/COINGECKO_v3/NORMAL
+
+cryptoracle:
+  enabled: true
+  root: /home/joyce/cryptoracle/cryptoracle_data/NORMAL

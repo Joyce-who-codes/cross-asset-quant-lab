@@ -1,0 +1,2974 @@
+[
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_PRICE_HISTORY",
+    "symbol": "0GUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_PRICE_HISTORY/1h/Binance/0GUSDT/2025-09-01.csv",
+    "n_rows": 321,
+    "n_cols": 6,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64",
+      "volume_usd": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2025-09-17 15:00:00",
+    "max_time": "2025-09-30 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2025-09-17T15:00:00.000",
+        "open": 1.485,
+        "high": 1.6399,
+        "low": 1.2891,
+        "close": 1.5811,
+        "volume_usd": 9149164.3577
+      },
+      {
+        "timestamp": "2025-09-17T16:00:00.000",
+        "open": 1.5795,
+        "high": 2.0175,
+        "low": 1.5643,
+        "close": 1.725,
+        "volume_usd": 33687993.5904
+      },
+      {
+        "timestamp": "2025-09-17T17:00:00.000",
+        "open": 1.7244,
+        "high": 1.7366,
+        "low": 1.472,
+        "close": 1.5837,
+        "volume_usd": 18127405.0781
+      },
+      {
+        "timestamp": "2025-09-17T18:00:00.000",
+        "open": 1.5837,
+        "high": 1.6875,
+        "low": 1.522,
+        "close": 1.618,
+        "volume_usd": 10345109.7222
+      },
+      {
+        "timestamp": "2025-09-17T19:00:00.000",
+        "open": 1.619,
+        "high": 1.869,
+        "low": 1.591,
+        "close": 1.8545,
+        "volume_usd": 14975008.5609
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_PRICE_HISTORY",
+    "symbol": "1000000BOBUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_PRICE_HISTORY/1h/Binance/1000000BOBUSDT/2025-06-01.csv",
+    "n_rows": 616,
+    "n_cols": 6,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64",
+      "volume_usd": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2025-06-05 08:00:00",
+    "max_time": "2025-06-30 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2025-06-05T08:00:00.000",
+        "open": 0.09277,
+        "high": 0.11726,
+        "low": 0.09259,
+        "close": 0.10968,
+        "volume_usd": 16083709.72
+      },
+      {
+        "timestamp": "2025-06-05T09:00:00.000",
+        "open": 0.10961,
+        "high": 0.1125,
+        "low": 0.1025,
+        "close": 0.1058,
+        "volume_usd": 11770858.4424
+      },
+      {
+        "timestamp": "2025-06-05T10:00:00.000",
+        "open": 0.10577,
+        "high": 0.1069,
+        "low": 0.09995,
+        "close": 0.10078,
+        "volume_usd": 7300518.0988
+      },
+      {
+        "timestamp": "2025-06-05T11:00:00.000",
+        "open": 0.10079,
+        "high": 0.10282,
+        "low": 0.09331,
+        "close": 0.09613,
+        "volume_usd": 6619190.6455
+      },
+      {
+        "timestamp": "2025-06-05T12:00:00.000",
+        "open": 0.09613,
+        "high": 0.1025,
+        "low": 0.09507,
+        "close": 0.10166,
+        "volume_usd": 5444180.4806
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_PRICE_HISTORY",
+    "symbol": "1000000MOGUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_PRICE_HISTORY/1h/Binance/1000000MOGUSDT/2024-11-01.csv",
+    "n_rows": 564,
+    "n_cols": 6,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64",
+      "volume_usd": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2024-11-07 12:00:00",
+    "max_time": "2024-11-30 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2024-11-07T12:00:00.000",
+        "open": 2.0968,
+        "high": 2.1361,
+        "low": 1.9797,
+        "close": 1.9898,
+        "volume_usd": 3807916.7795
+      },
+      {
+        "timestamp": "2024-11-07T13:00:00.000",
+        "open": 1.9915,
+        "high": 2.0283,
+        "low": 1.9158,
+        "close": 1.9459,
+        "volume_usd": 10655039.1592
+      },
+      {
+        "timestamp": "2024-11-07T14:00:00.000",
+        "open": 1.9463,
+        "high": 2.1225,
+        "low": 1.9288,
+        "close": 2.0555,
+        "volume_usd": 11607601.8528
+      },
+      {
+        "timestamp": "2024-11-07T15:00:00.000",
+        "open": 2.0563,
+        "high": 2.1656,
+        "low": 2.027,
+        "close": 2.1526,
+        "volume_usd": 6811239.3646
+      },
+      {
+        "timestamp": "2024-11-07T16:00:00.000",
+        "open": 2.1554,
+        "high": 2.1765,
+        "low": 2.0709,
+        "close": 2.1492,
+        "volume_usd": 6945603.6059
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_PRICE_HISTORY",
+    "symbol": "1000BONKUSDC",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_PRICE_HISTORY/1h/Binance/1000BONKUSDC/2024-05-01.csv",
+    "n_rows": 502,
+    "n_cols": 6,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64",
+      "volume_usd": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2024-05-11 02:00:00",
+    "max_time": "2024-05-31 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2024-05-11T02:00:00.000",
+        "open": 0.023027,
+        "high": 0.023027,
+        "low": 0.022814,
+        "close": 0.022916,
+        "volume_usd": 133598.5971
+      },
+      {
+        "timestamp": "2024-05-11T03:00:00.000",
+        "open": 0.022931,
+        "high": 0.023018,
+        "low": 0.022803,
+        "close": 0.022803,
+        "volume_usd": 137242.4575
+      },
+      {
+        "timestamp": "2024-05-11T04:00:00.000",
+        "open": 0.022828,
+        "high": 0.02295,
+        "low": 0.022759,
+        "close": 0.022843,
+        "volume_usd": 127665.0985
+      },
+      {
+        "timestamp": "2024-05-11T05:00:00.000",
+        "open": 0.02285,
+        "high": 0.023055,
+        "low": 0.022843,
+        "close": 0.02295,
+        "volume_usd": 176132.6905
+      },
+      {
+        "timestamp": "2024-05-11T06:00:00.000",
+        "open": 0.022951,
+        "high": 0.02317,
+        "low": 0.022927,
+        "close": 0.023003,
+        "volume_usd": 113906.2792
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_PRICE_HISTORY",
+    "symbol": "1000BONKUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_PRICE_HISTORY/1h/Binance/1000BONKUSDT/2023-11-01.csv",
+    "n_rows": 202,
+    "n_cols": 6,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64",
+      "volume_usd": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2023-11-22 14:00:00",
+    "max_time": "2023-11-30 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_usd"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2023-11-22T14:00:00.000",
+        "open": 0.004791,
+        "high": 0.004797,
+        "low": 0.004107,
+        "close": 0.004282,
+        "volume_usd": 7716610.6742
+      },
+      {
+        "timestamp": "2023-11-22T15:00:00.000",
+        "open": 0.004282,
+        "high": 0.00447,
+        "low": 0.004076,
+        "close": 0.004252,
+        "volume_usd": 10830784.0584
+      },
+      {
+        "timestamp": "2023-11-22T16:00:00.000",
+        "open": 0.004254,
+        "high": 0.004436,
+        "low": 0.00417,
+        "close": 0.00429,
+        "volume_usd": 5720502.6023
+      },
+      {
+        "timestamp": "2023-11-22T17:00:00.000",
+        "open": 0.004292,
+        "high": 0.004499,
+        "low": 0.00415,
+        "close": 0.004442,
+        "volume_usd": 6502768.0764
+      },
+      {
+        "timestamp": "2023-11-22T18:00:00.000",
+        "open": 0.004441,
+        "high": 0.004724,
+        "low": 0.004367,
+        "close": 0.004497,
+        "volume_usd": 6626534.778
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_FUNDING_RATE_HISTORY",
+    "symbol": "0GUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_FUNDING_RATE_HISTORY/1h/Binance/0GUSDT/2025-09-01.csv",
+    "n_rows": 321,
+    "n_cols": 5,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2025-09-17 15:00:00",
+    "max_time": "2025-09-30 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2025-09-17T15:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2025-09-17T16:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2025-09-17T17:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2025-09-17T18:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2025-09-17T19:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_FUNDING_RATE_HISTORY",
+    "symbol": "1000000BOBUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_FUNDING_RATE_HISTORY/1h/Binance/1000000BOBUSDT/2025-06-01.csv",
+    "n_rows": 616,
+    "n_cols": 5,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2025-06-05 08:00:00",
+    "max_time": "2025-06-30 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2025-06-05T08:00:00.000",
+        "open": -2.0,
+        "high": -0.174984,
+        "low": -2.0,
+        "close": -0.174984
+      },
+      {
+        "timestamp": "2025-06-05T09:00:00.000",
+        "open": -0.174984,
+        "high": 0.07974,
+        "low": -0.43389,
+        "close": -0.363179
+      },
+      {
+        "timestamp": "2025-06-05T10:00:00.000",
+        "open": -0.363179,
+        "high": -0.080168,
+        "low": -0.363179,
+        "close": -0.080168
+      },
+      {
+        "timestamp": "2025-06-05T11:00:00.000",
+        "open": -0.080168,
+        "high": -0.041402,
+        "low": -0.095873,
+        "close": -0.09288
+      },
+      {
+        "timestamp": "2025-06-05T12:00:00.000",
+        "open": -0.09288,
+        "high": -0.088648,
+        "low": -0.353557,
+        "close": -0.353557
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_FUNDING_RATE_HISTORY",
+    "symbol": "1000000MOGUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_FUNDING_RATE_HISTORY/1h/Binance/1000000MOGUSDT/2024-11-01.csv",
+    "n_rows": 564,
+    "n_cols": 5,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2024-11-07 12:00:00",
+    "max_time": "2024-11-30 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2024-11-07T12:00:00.000",
+        "open": 0.01,
+        "high": 0.106096,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2024-11-07T13:00:00.000",
+        "open": 0.005,
+        "high": 0.091737,
+        "low": 0.005,
+        "close": 0.04137
+      },
+      {
+        "timestamp": "2024-11-07T14:00:00.000",
+        "open": 0.04137,
+        "high": 0.04137,
+        "low": 0.018936,
+        "close": 0.018936
+      },
+      {
+        "timestamp": "2024-11-07T15:00:00.000",
+        "open": 0.018936,
+        "high": 0.018936,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2024-11-07T16:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_FUNDING_RATE_HISTORY",
+    "symbol": "1000BONKUSDC",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_FUNDING_RATE_HISTORY/1h/Binance/1000BONKUSDC/2024-05-01.csv",
+    "n_rows": 713,
+    "n_cols": 5,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2024-05-02 07:00:00",
+    "max_time": "2024-05-31 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2024-05-02T07:00:00.000",
+        "open": 0.005,
+        "high": 0.01,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2024-05-02T08:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2024-05-02T09:00:00.000",
+        "open": 0.005,
+        "high": 0.018928,
+        "low": 0.005,
+        "close": 0.012955
+      },
+      {
+        "timestamp": "2024-05-02T10:00:00.000",
+        "open": 0.012955,
+        "high": 0.012955,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2024-05-02T11:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_FUNDING_RATE_HISTORY",
+    "symbol": "1000BONKUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_FUNDING_RATE_HISTORY/1h/Binance/1000BONKUSDT/2024-02-01.csv",
+    "n_rows": 684,
+    "n_cols": 5,
+    "columns": [
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "timestamp",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "2024-02-01 12:00:00",
+    "max_time": "2024-02-29 23:00:00",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "timestamp": "2024-02-01T12:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2024-02-01T13:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2024-02-01T14:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2024-02-01T15:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      },
+      {
+        "timestamp": "2024-02-01T16:00:00.000",
+        "open": 0.005,
+        "high": 0.005,
+        "low": 0.005,
+        "close": 0.005
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_OPEN_INTEREST",
+    "symbol": "0GUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_OPEN_INTEREST/1h/Binance/0GUSDT/2025-09-01.csv",
+    "n_rows": 321,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:29:18.121200",
+    "max_time": "1970-01-01 00:29:19.273200",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "time": 1758121200000,
+        "timestamp": "2025-09-17T15:00:00.000+0000",
+        "open": 957720.0,
+        "high": 2390284.0,
+        "low": 957720.0,
+        "close": 2390284.0
+      },
+      {
+        "time": 1758124800000,
+        "timestamp": "2025-09-17T16:00:00.000+0000",
+        "open": 2390284.0,
+        "high": 3396533.0,
+        "low": 2390284.0,
+        "close": 3396533.0
+      },
+      {
+        "time": 1758128400000,
+        "timestamp": "2025-09-17T17:00:00.000+0000",
+        "open": 3396533.0,
+        "high": 3689535.0,
+        "low": 3225333.0,
+        "close": 3359931.0
+      },
+      {
+        "time": 1758132000000,
+        "timestamp": "2025-09-17T18:00:00.000+0000",
+        "open": 3359931.0,
+        "high": 3534306.0,
+        "low": 3195457.0,
+        "close": 3497564.0
+      },
+      {
+        "time": 1758135600000,
+        "timestamp": "2025-09-17T19:00:00.000+0000",
+        "open": 3497564.0,
+        "high": 4944897.0,
+        "low": 3425733.0,
+        "close": 4944897.0
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_OPEN_INTEREST",
+    "symbol": "1000000BOBUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_OPEN_INTEREST/1h/Binance/1000000BOBUSDT/2025-06-01.csv",
+    "n_rows": 616,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:29:09.110400",
+    "max_time": "1970-01-01 00:29:11.324400",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "time": 1749110400000,
+        "timestamp": "2025-06-05T08:00:00.000+0000",
+        "open": 345400.0,
+        "high": 2077284.0,
+        "low": 345400.0,
+        "close": 2041062.0
+      },
+      {
+        "time": 1749114000000,
+        "timestamp": "2025-06-05T09:00:00.000+0000",
+        "open": 2041062.0,
+        "high": 2335159.0,
+        "low": 1968288.0,
+        "close": 2330028.0
+      },
+      {
+        "time": 1749117600000,
+        "timestamp": "2025-06-05T10:00:00.000+0000",
+        "open": 2330028.0,
+        "high": 2374108.0,
+        "low": 2027937.0,
+        "close": 2153164.0
+      },
+      {
+        "time": 1749121200000,
+        "timestamp": "2025-06-05T11:00:00.000+0000",
+        "open": 2153164.0,
+        "high": 2262068.0,
+        "low": 1892093.0,
+        "close": 1922352.0
+      },
+      {
+        "time": 1749124800000,
+        "timestamp": "2025-06-05T12:00:00.000+0000",
+        "open": 1922352.0,
+        "high": 2182440.0,
+        "low": 1878135.0,
+        "close": 2169771.0
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_OPEN_INTEREST",
+    "symbol": "1000000MOGUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_OPEN_INTEREST/1h/Binance/1000000MOGUSDT/2024-11-01.csv",
+    "n_rows": 564,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:50.980800",
+    "max_time": "1970-01-01 00:28:53.007600",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "time": 1730980800000,
+        "timestamp": "2024-11-07T12:00:00.000+0000",
+        "open": 252475.0,
+        "high": 921735.0,
+        "low": 252475.0,
+        "close": 921735.0
+      },
+      {
+        "time": 1730984400000,
+        "timestamp": "2024-11-07T13:00:00.000+0000",
+        "open": 921735.0,
+        "high": 1701628.0,
+        "low": 921735.0,
+        "close": 1701628.0
+      },
+      {
+        "time": 1730988000000,
+        "timestamp": "2024-11-07T14:00:00.000+0000",
+        "open": 1701628.0,
+        "high": 2207652.0,
+        "low": 1667257.0,
+        "close": 2083605.0
+      },
+      {
+        "time": 1730991600000,
+        "timestamp": "2024-11-07T15:00:00.000+0000",
+        "open": 2083605.0,
+        "high": 2241192.0,
+        "low": 2058870.0,
+        "close": 2202272.0
+      },
+      {
+        "time": 1730995200000,
+        "timestamp": "2024-11-07T16:00:00.000+0000",
+        "open": 2202272.0,
+        "high": 2202272.0,
+        "low": 1953461.0,
+        "close": 2053248.0
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_OPEN_INTEREST",
+    "symbol": "1000BONKUSDC",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_OPEN_INTEREST/1h/Binance/1000BONKUSDC/2024-05-01.csv",
+    "n_rows": 713,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:34.633200",
+    "max_time": "1970-01-01 00:28:37.196400",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "time": 1714633200000,
+        "timestamp": "2024-05-02T07:00:00.000+0000",
+        "open": 5.0,
+        "high": 276.0,
+        "low": 5.0,
+        "close": 172.0
+      },
+      {
+        "time": 1714636800000,
+        "timestamp": "2024-05-02T08:00:00.000+0000",
+        "open": 172.0,
+        "high": 13238.0,
+        "low": 172.0,
+        "close": 13238.0
+      },
+      {
+        "time": 1714640400000,
+        "timestamp": "2024-05-02T09:00:00.000+0000",
+        "open": 13238.0,
+        "high": 29479.0,
+        "low": 12805.0,
+        "close": 29087.0
+      },
+      {
+        "time": 1714644000000,
+        "timestamp": "2024-05-02T10:00:00.000+0000",
+        "open": 29087.0,
+        "high": 44834.0,
+        "low": 27014.0,
+        "close": 44556.0
+      },
+      {
+        "time": 1714647600000,
+        "timestamp": "2024-05-02T11:00:00.000+0000",
+        "open": 44556.0,
+        "high": 169640.0,
+        "low": 44319.0,
+        "close": 76636.0
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_OPEN_INTEREST",
+    "symbol": "1000BONKUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_OPEN_INTEREST/1h/Binance/1000BONKUSDT/2024-02-01.csv",
+    "n_rows": 664,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "open": "float64",
+      "high": "float64",
+      "low": "float64",
+      "close": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:26.860800",
+    "max_time": "1970-01-01 00:28:29.247600",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "open",
+      "high",
+      "low",
+      "close"
+    ],
+    "sample_head": [
+      {
+        "time": 1706860800000,
+        "timestamp": "2024-02-02T08:00:00.000+0000",
+        "open": 16439917.0,
+        "high": 16481136.0,
+        "low": 16213371.0,
+        "close": 16284235.0
+      },
+      {
+        "time": 1706864400000,
+        "timestamp": "2024-02-02T09:00:00.000+0000",
+        "open": 16284235.0,
+        "high": 16410759.0,
+        "low": 16194358.0,
+        "close": 16368451.0
+      },
+      {
+        "time": 1706868000000,
+        "timestamp": "2024-02-02T10:00:00.000+0000",
+        "open": 16368451.0,
+        "high": 16483410.0,
+        "low": 16339994.0,
+        "close": 16415565.0
+      },
+      {
+        "time": 1706871600000,
+        "timestamp": "2024-02-02T11:00:00.000+0000",
+        "open": 16415565.0,
+        "high": 16484910.0,
+        "low": 16319893.0,
+        "close": 16411036.0
+      },
+      {
+        "time": 1706875200000,
+        "timestamp": "2024-02-02T12:00:00.000+0000",
+        "open": 16411036.0,
+        "high": 16451657.0,
+        "low": 16275885.0,
+        "close": 16413657.0
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_TAKER_BUY_SELL_VOLUME",
+    "symbol": "0GUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_TAKER_BUY_SELL_VOLUME/1h/Binance/0GUSDT/2025-09-01.csv",
+    "n_rows": 321,
+    "n_cols": 4,
+    "columns": [
+      "time",
+      "timestamp",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "taker_buy_volume_usd": "float64",
+      "taker_sell_volume_usd": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:29:18.121200",
+    "max_time": "1970-01-01 00:29:19.273200",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "taker_buy_volume_usd": 0.0,
+      "taker_sell_volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "sample_head": [
+      {
+        "time": 1758121200000,
+        "timestamp": "2025-09-17T15:00:00.000",
+        "taker_buy_volume_usd": 4687735.7445,
+        "taker_sell_volume_usd": 4461428.6132
+      },
+      {
+        "time": 1758124800000,
+        "timestamp": "2025-09-17T16:00:00.000",
+        "taker_buy_volume_usd": 17142293.5936,
+        "taker_sell_volume_usd": 16545699.9968
+      },
+      {
+        "time": 1758128400000,
+        "timestamp": "2025-09-17T17:00:00.000",
+        "taker_buy_volume_usd": 9020865.4994,
+        "taker_sell_volume_usd": 9106539.5787
+      },
+      {
+        "time": 1758132000000,
+        "timestamp": "2025-09-17T18:00:00.000",
+        "taker_buy_volume_usd": 5270310.1907,
+        "taker_sell_volume_usd": 5074799.5315
+      },
+      {
+        "time": 1758135600000,
+        "timestamp": "2025-09-17T19:00:00.000",
+        "taker_buy_volume_usd": 7879989.4988,
+        "taker_sell_volume_usd": 7095019.0621
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_TAKER_BUY_SELL_VOLUME",
+    "symbol": "1000000BOBUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_TAKER_BUY_SELL_VOLUME/1h/Binance/1000000BOBUSDT/2025-06-01.csv",
+    "n_rows": 616,
+    "n_cols": 4,
+    "columns": [
+      "time",
+      "timestamp",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "taker_buy_volume_usd": "float64",
+      "taker_sell_volume_usd": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:29:09.110400",
+    "max_time": "1970-01-01 00:29:11.324400",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "taker_buy_volume_usd": 0.0,
+      "taker_sell_volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "sample_head": [
+      {
+        "time": 1749110400000,
+        "timestamp": "2025-06-05T08:00:00.000",
+        "taker_buy_volume_usd": 8059683.7515,
+        "taker_sell_volume_usd": 8024025.9685
+      },
+      {
+        "time": 1749114000000,
+        "timestamp": "2025-06-05T09:00:00.000",
+        "taker_buy_volume_usd": 6010357.7139,
+        "taker_sell_volume_usd": 5760500.7285
+      },
+      {
+        "time": 1749117600000,
+        "timestamp": "2025-06-05T10:00:00.000",
+        "taker_buy_volume_usd": 3335073.709,
+        "taker_sell_volume_usd": 3965444.3898
+      },
+      {
+        "time": 1749121200000,
+        "timestamp": "2025-06-05T11:00:00.000",
+        "taker_buy_volume_usd": 3252255.3363,
+        "taker_sell_volume_usd": 3366935.3092
+      },
+      {
+        "time": 1749124800000,
+        "timestamp": "2025-06-05T12:00:00.000",
+        "taker_buy_volume_usd": 2933268.5475,
+        "taker_sell_volume_usd": 2510911.9331
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_TAKER_BUY_SELL_VOLUME",
+    "symbol": "1000000MOGUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_TAKER_BUY_SELL_VOLUME/1h/Binance/1000000MOGUSDT/2024-11-01.csv",
+    "n_rows": 564,
+    "n_cols": 4,
+    "columns": [
+      "time",
+      "timestamp",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "taker_buy_volume_usd": "float64",
+      "taker_sell_volume_usd": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:50.980800",
+    "max_time": "1970-01-01 00:28:53.007600",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "taker_buy_volume_usd": 0.0,
+      "taker_sell_volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "sample_head": [
+      {
+        "time": 1730980800000,
+        "timestamp": "2024-11-07T12:00:00.000",
+        "taker_buy_volume_usd": 1681808.7975,
+        "taker_sell_volume_usd": 2126107.982
+      },
+      {
+        "time": 1730984400000,
+        "timestamp": "2024-11-07T13:00:00.000",
+        "taker_buy_volume_usd": 5206943.1692,
+        "taker_sell_volume_usd": 5448095.99
+      },
+      {
+        "time": 1730988000000,
+        "timestamp": "2024-11-07T14:00:00.000",
+        "taker_buy_volume_usd": 5970243.2853,
+        "taker_sell_volume_usd": 5637358.5675
+      },
+      {
+        "time": 1730991600000,
+        "timestamp": "2024-11-07T15:00:00.000",
+        "taker_buy_volume_usd": 3553591.148,
+        "taker_sell_volume_usd": 3257648.2166
+      },
+      {
+        "time": 1730995200000,
+        "timestamp": "2024-11-07T16:00:00.000",
+        "taker_buy_volume_usd": 3426720.3531,
+        "taker_sell_volume_usd": 3518883.2528
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_TAKER_BUY_SELL_VOLUME",
+    "symbol": "1000BONKUSDC",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_TAKER_BUY_SELL_VOLUME/1h/Binance/1000BONKUSDC/2024-05-01.csv",
+    "n_rows": 502,
+    "n_cols": 4,
+    "columns": [
+      "time",
+      "timestamp",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "taker_buy_volume_usd": "float64",
+      "taker_sell_volume_usd": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:35.392800",
+    "max_time": "1970-01-01 00:28:37.196400",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "taker_buy_volume_usd": 0.0,
+      "taker_sell_volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "sample_head": [
+      {
+        "time": 1715392800000,
+        "timestamp": "2024-05-11T02:00:00.000",
+        "taker_buy_volume_usd": 60760.0372,
+        "taker_sell_volume_usd": 72838.5599
+      },
+      {
+        "time": 1715396400000,
+        "timestamp": "2024-05-11T03:00:00.000",
+        "taker_buy_volume_usd": 48475.2184,
+        "taker_sell_volume_usd": 88767.2391
+      },
+      {
+        "time": 1715400000000,
+        "timestamp": "2024-05-11T04:00:00.000",
+        "taker_buy_volume_usd": 60987.2454,
+        "taker_sell_volume_usd": 66677.8531
+      },
+      {
+        "time": 1715403600000,
+        "timestamp": "2024-05-11T05:00:00.000",
+        "taker_buy_volume_usd": 79272.8,
+        "taker_sell_volume_usd": 96859.8905
+      },
+      {
+        "time": 1715407200000,
+        "timestamp": "2024-05-11T06:00:00.000",
+        "taker_buy_volume_usd": 51718.6363,
+        "taker_sell_volume_usd": 62187.6429
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_TAKER_BUY_SELL_VOLUME",
+    "symbol": "1000BONKUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_TAKER_BUY_SELL_VOLUME/1h/Binance/1000BONKUSDT/2024-02-01.csv",
+    "n_rows": 661,
+    "n_cols": 4,
+    "columns": [
+      "time",
+      "timestamp",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "taker_buy_volume_usd": "float64",
+      "taker_sell_volume_usd": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:26.871600",
+    "max_time": "1970-01-01 00:28:29.247600",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "taker_buy_volume_usd": 0.0,
+      "taker_sell_volume_usd": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "taker_buy_volume_usd",
+      "taker_sell_volume_usd"
+    ],
+    "sample_head": [
+      {
+        "time": 1706871600000,
+        "timestamp": "2024-02-02T11:00:00.000",
+        "taker_buy_volume_usd": 506904.8464,
+        "taker_sell_volume_usd": 570408.9033
+      },
+      {
+        "time": 1706875200000,
+        "timestamp": "2024-02-02T12:00:00.000",
+        "taker_buy_volume_usd": 760587.2134,
+        "taker_sell_volume_usd": 943599.3024
+      },
+      {
+        "time": 1706878800000,
+        "timestamp": "2024-02-02T13:00:00.000",
+        "taker_buy_volume_usd": 1737744.4919,
+        "taker_sell_volume_usd": 2080566.0156
+      },
+      {
+        "time": 1706882400000,
+        "timestamp": "2024-02-02T14:00:00.000",
+        "taker_buy_volume_usd": 1011383.2324,
+        "taker_sell_volume_usd": 1126808.343
+      },
+      {
+        "time": 1706886000000,
+        "timestamp": "2024-02-02T15:00:00.000",
+        "taker_buy_volume_usd": 1119323.0018,
+        "taker_sell_volume_usd": 1411166.4671
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_GLOBAL_LS_ACCOUNT_RATIO",
+    "symbol": "0GUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_GLOBAL_LS_ACCOUNT_RATIO/1h/Binance/0GUSDT/2025-09-01.csv",
+    "n_rows": 320,
+    "n_cols": 5,
+    "columns": [
+      "time",
+      "timestamp",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "global_account_long_percent": "float64",
+      "global_account_short_percent": "float64",
+      "global_account_long_short_ratio": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:29:18.124800",
+    "max_time": "1970-01-01 00:29:19.273200",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "global_account_long_percent": 0.0,
+      "global_account_short_percent": 0.0,
+      "global_account_long_short_ratio": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "sample_head": [
+      {
+        "time": 1758124800000,
+        "timestamp": "2025-09-17T16:00:00.000",
+        "global_account_long_percent": 48.71,
+        "global_account_short_percent": 51.29,
+        "global_account_long_short_ratio": 0.95
+      },
+      {
+        "time": 1758128400000,
+        "timestamp": "2025-09-17T17:00:00.000",
+        "global_account_long_percent": 51.42,
+        "global_account_short_percent": 48.58,
+        "global_account_long_short_ratio": 1.06
+      },
+      {
+        "time": 1758132000000,
+        "timestamp": "2025-09-17T18:00:00.000",
+        "global_account_long_percent": 47.43,
+        "global_account_short_percent": 52.57,
+        "global_account_long_short_ratio": 0.9
+      },
+      {
+        "time": 1758135600000,
+        "timestamp": "2025-09-17T19:00:00.000",
+        "global_account_long_percent": 47.69,
+        "global_account_short_percent": 52.31,
+        "global_account_long_short_ratio": 0.91
+      },
+      {
+        "time": 1758139200000,
+        "timestamp": "2025-09-17T20:00:00.000",
+        "global_account_long_percent": 49.66,
+        "global_account_short_percent": 50.34,
+        "global_account_long_short_ratio": 0.99
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_GLOBAL_LS_ACCOUNT_RATIO",
+    "symbol": "1000000BOBUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_GLOBAL_LS_ACCOUNT_RATIO/1h/Binance/1000000BOBUSDT/2025-06-01.csv",
+    "n_rows": 615,
+    "n_cols": 5,
+    "columns": [
+      "time",
+      "timestamp",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "global_account_long_percent": "float64",
+      "global_account_short_percent": "float64",
+      "global_account_long_short_ratio": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:29:09.114000",
+    "max_time": "1970-01-01 00:29:11.324400",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "global_account_long_percent": 0.0,
+      "global_account_short_percent": 0.0,
+      "global_account_long_short_ratio": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "sample_head": [
+      {
+        "time": 1749114000000,
+        "timestamp": "2025-06-05T09:00:00.000",
+        "global_account_long_percent": 46.24,
+        "global_account_short_percent": 53.76,
+        "global_account_long_short_ratio": 0.86
+      },
+      {
+        "time": 1749117600000,
+        "timestamp": "2025-06-05T10:00:00.000",
+        "global_account_long_percent": 49.02,
+        "global_account_short_percent": 50.98,
+        "global_account_long_short_ratio": 0.96
+      },
+      {
+        "time": 1749121200000,
+        "timestamp": "2025-06-05T11:00:00.000",
+        "global_account_long_percent": 44.76,
+        "global_account_short_percent": 55.24,
+        "global_account_long_short_ratio": 0.81
+      },
+      {
+        "time": 1749124800000,
+        "timestamp": "2025-06-05T12:00:00.000",
+        "global_account_long_percent": 40.22,
+        "global_account_short_percent": 59.78,
+        "global_account_long_short_ratio": 0.67
+      },
+      {
+        "time": 1749128400000,
+        "timestamp": "2025-06-05T13:00:00.000",
+        "global_account_long_percent": 42.9,
+        "global_account_short_percent": 57.1,
+        "global_account_long_short_ratio": 0.75
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_GLOBAL_LS_ACCOUNT_RATIO",
+    "symbol": "1000000MOGUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_GLOBAL_LS_ACCOUNT_RATIO/1h/Binance/1000000MOGUSDT/2024-11-01.csv",
+    "n_rows": 563,
+    "n_cols": 5,
+    "columns": [
+      "time",
+      "timestamp",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "global_account_long_percent": "float64",
+      "global_account_short_percent": "float64",
+      "global_account_long_short_ratio": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:50.984400",
+    "max_time": "1970-01-01 00:28:53.007600",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "global_account_long_percent": 0.0,
+      "global_account_short_percent": 0.0,
+      "global_account_long_short_ratio": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "sample_head": [
+      {
+        "time": 1730984400000,
+        "timestamp": "2024-11-07T13:00:00.000",
+        "global_account_long_percent": 54.29,
+        "global_account_short_percent": 45.71,
+        "global_account_long_short_ratio": 1.19
+      },
+      {
+        "time": 1730988000000,
+        "timestamp": "2024-11-07T14:00:00.000",
+        "global_account_long_percent": 59.25,
+        "global_account_short_percent": 40.75,
+        "global_account_long_short_ratio": 1.45
+      },
+      {
+        "time": 1730991600000,
+        "timestamp": "2024-11-07T15:00:00.000",
+        "global_account_long_percent": 57.21,
+        "global_account_short_percent": 42.79,
+        "global_account_long_short_ratio": 1.34
+      },
+      {
+        "time": 1730995200000,
+        "timestamp": "2024-11-07T16:00:00.000",
+        "global_account_long_percent": 56.96,
+        "global_account_short_percent": 43.04,
+        "global_account_long_short_ratio": 1.32
+      },
+      {
+        "time": 1730998800000,
+        "timestamp": "2024-11-07T17:00:00.000",
+        "global_account_long_percent": 57.17,
+        "global_account_short_percent": 42.83,
+        "global_account_long_short_ratio": 1.34
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_GLOBAL_LS_ACCOUNT_RATIO",
+    "symbol": "1000BONKUSDC",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_GLOBAL_LS_ACCOUNT_RATIO/1h/Binance/1000BONKUSDC/2024-05-01.csv",
+    "n_rows": 712,
+    "n_cols": 5,
+    "columns": [
+      "time",
+      "timestamp",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "global_account_long_percent": "float64",
+      "global_account_short_percent": "float64",
+      "global_account_long_short_ratio": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:34.636800",
+    "max_time": "1970-01-01 00:28:37.196400",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "global_account_long_percent": 0.0,
+      "global_account_short_percent": 0.0,
+      "global_account_long_short_ratio": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "sample_head": [
+      {
+        "time": 1714636800000,
+        "timestamp": "2024-05-02T08:00:00.000",
+        "global_account_long_percent": 50.0,
+        "global_account_short_percent": 50.0,
+        "global_account_long_short_ratio": 1.0
+      },
+      {
+        "time": 1714640400000,
+        "timestamp": "2024-05-02T09:00:00.000",
+        "global_account_long_percent": 81.58,
+        "global_account_short_percent": 18.42,
+        "global_account_long_short_ratio": 4.43
+      },
+      {
+        "time": 1714644000000,
+        "timestamp": "2024-05-02T10:00:00.000",
+        "global_account_long_percent": 62.5,
+        "global_account_short_percent": 37.5,
+        "global_account_long_short_ratio": 1.67
+      },
+      {
+        "time": 1714647600000,
+        "timestamp": "2024-05-02T11:00:00.000",
+        "global_account_long_percent": 55.56,
+        "global_account_short_percent": 44.44,
+        "global_account_long_short_ratio": 1.25
+      },
+      {
+        "time": 1714651200000,
+        "timestamp": "2024-05-02T12:00:00.000",
+        "global_account_long_percent": 57.53,
+        "global_account_short_percent": 42.47,
+        "global_account_long_short_ratio": 1.36
+      }
+    ]
+  },
+  {
+    "source": "coinglass",
+    "dataset": "FUTURES_GLOBAL_LS_ACCOUNT_RATIO",
+    "symbol": "1000BONKUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGLASS/COINGLASS_v6/NORMAL/FUTURES_GLOBAL_LS_ACCOUNT_RATIO/1h/Binance/1000BONKUSDT/2024-02-01.csv",
+    "n_rows": 664,
+    "n_cols": 5,
+    "columns": [
+      "time",
+      "timestamp",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "global_account_long_percent": "float64",
+      "global_account_short_percent": "float64",
+      "global_account_long_short_ratio": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:26.860800",
+    "max_time": "1970-01-01 00:28:29.247600",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "global_account_long_percent": 0.0,
+      "global_account_short_percent": 0.0,
+      "global_account_long_short_ratio": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "global_account_long_percent",
+      "global_account_short_percent",
+      "global_account_long_short_ratio"
+    ],
+    "sample_head": [
+      {
+        "time": 1706860800000,
+        "timestamp": "2024-02-02T08:00:00.000",
+        "global_account_long_percent": 78.88,
+        "global_account_short_percent": 21.12,
+        "global_account_long_short_ratio": 3.74
+      },
+      {
+        "time": 1706864400000,
+        "timestamp": "2024-02-02T09:00:00.000",
+        "global_account_long_percent": 78.97,
+        "global_account_short_percent": 21.03,
+        "global_account_long_short_ratio": 3.76
+      },
+      {
+        "time": 1706868000000,
+        "timestamp": "2024-02-02T10:00:00.000",
+        "global_account_long_percent": 79.01,
+        "global_account_short_percent": 20.99,
+        "global_account_long_short_ratio": 3.76
+      },
+      {
+        "time": 1706871600000,
+        "timestamp": "2024-02-02T11:00:00.000",
+        "global_account_long_percent": 79.23,
+        "global_account_short_percent": 20.77,
+        "global_account_long_short_ratio": 3.82
+      },
+      {
+        "time": 1706875200000,
+        "timestamp": "2024-02-02T12:00:00.000",
+        "global_account_long_percent": 79.16,
+        "global_account_short_percent": 20.84,
+        "global_account_long_short_ratio": 3.8
+      }
+    ]
+  },
+  {
+    "source": "coingecko",
+    "dataset": "COIN_MARKET_CHART/hourly",
+    "symbol": "0GUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGECKO_v3/NORMAL/COIN_MARKET_CHART/hourly/0GUSDT/2025-09-01.csv",
+    "n_rows": 207,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "normal_time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "normal_time": "object",
+      "price": "float64",
+      "market_cap": "float64",
+      "total_volume": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:29:18.532002326",
+    "max_time": "1970-01-01 00:29:19.273361382",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "normal_time": 0.0,
+      "price": 0.0,
+      "market_cap": 0.0,
+      "total_volume": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "sample_head": [
+      {
+        "time": 1758532002326,
+        "timestamp": "2025-09-22T09:06:42.326+0000",
+        "normal_time": "2025-09-22T09:00:00.000+0000",
+        "price": 4.955730329895857,
+        "market_cap": 1041327087.2236402,
+        "total_volume": 14417388.579448337
+      },
+      {
+        "time": 1758535371980,
+        "timestamp": "2025-09-22T10:02:51.980+0000",
+        "normal_time": "2025-09-22T10:00:00.000+0000",
+        "price": 5.169854830276427,
+        "market_cap": 1096366318.628283,
+        "total_volume": 21433349.13486822
+      },
+      {
+        "time": 1758539153480,
+        "timestamp": "2025-09-22T11:05:53.480+0000",
+        "normal_time": "2025-09-22T11:00:00.000+0000",
+        "price": 3.537578784799276,
+        "market_cap": 754210813.4723033,
+        "total_volume": 59596687.98138047
+      },
+      {
+        "time": 1758542584002,
+        "timestamp": "2025-09-22T12:03:04.002+0000",
+        "normal_time": "2025-09-22T12:00:00.000+0000",
+        "price": 6.502987552178586,
+        "market_cap": 1280315439.969342,
+        "total_volume": 158347883.52138242
+      },
+      {
+        "time": 1758546149658,
+        "timestamp": "2025-09-22T13:02:29.658+0000",
+        "normal_time": "2025-09-22T13:00:00.000+0000",
+        "price": 6.393866058083523,
+        "market_cap": 1386338520.9850388,
+        "total_volume": 229584275.37884837
+      }
+    ]
+  },
+  {
+    "source": "coingecko",
+    "dataset": "COIN_MARKET_CHART/hourly",
+    "symbol": "1000000BOBUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGECKO_v3/NORMAL/COIN_MARKET_CHART/hourly/1000000BOBUSDT/2024-11-01.csv",
+    "n_rows": 270,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "normal_time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "normal_time": "object",
+      "price": "float64",
+      "market_cap": "float64",
+      "total_volume": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:52.036195928",
+    "max_time": "1970-01-01 00:28:53.007686344",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "normal_time": 0.0,
+      "price": 0.0,
+      "market_cap": 0.0,
+      "total_volume": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "sample_head": [
+      {
+        "time": 1732036195928,
+        "timestamp": "2024-11-19T17:09:55.928+0000",
+        "normal_time": "2024-11-19T17:00:00.000+0000",
+        "price": 1.0965030782189874e-08,
+        "market_cap": 0.0,
+        "total_volume": 1577664.3759084246
+      },
+      {
+        "time": 1732040088402,
+        "timestamp": "2024-11-19T18:14:48.402+0000",
+        "normal_time": "2024-11-19T18:00:00.000+0000",
+        "price": 1.3741802714340941e-08,
+        "market_cap": 0.0,
+        "total_volume": 2049123.3148873064
+      },
+      {
+        "time": 1732043613899,
+        "timestamp": "2024-11-19T19:13:33.899+0000",
+        "normal_time": "2024-11-19T19:00:00.000+0000",
+        "price": 1.1254738383390976e-08,
+        "market_cap": 0.0,
+        "total_volume": 2250343.1729485192
+      },
+      {
+        "time": 1732046809595,
+        "timestamp": "2024-11-19T20:06:49.595+0000",
+        "normal_time": "2024-11-19T20:00:00.000+0000",
+        "price": 1.1053064914750934e-08,
+        "market_cap": 0.0,
+        "total_volume": 2254271.4593415256
+      },
+      {
+        "time": 1732050426727,
+        "timestamp": "2024-11-19T21:07:06.727+0000",
+        "normal_time": "2024-11-19T21:00:00.000+0000",
+        "price": 1.1152724717288372e-08,
+        "market_cap": 0.0,
+        "total_volume": 2347239.1791364
+      }
+    ]
+  },
+  {
+    "source": "coingecko",
+    "dataset": "COIN_MARKET_CHART/hourly",
+    "symbol": "1000000MOGUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGECKO_v3/NORMAL/COIN_MARKET_CHART/hourly/1000000MOGUSDT/2023-07-01.csv",
+    "n_rows": 254,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "normal_time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "normal_time": "object",
+      "price": "float64",
+      "market_cap": "float64",
+      "total_volume": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:28:09.933640614",
+    "max_time": "1970-01-01 00:28:10.844512434",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "normal_time": 0.0,
+      "price": 0.0,
+      "market_cap": 0.0,
+      "total_volume": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "sample_head": [
+      {
+        "time": 1689933640614,
+        "timestamp": "2023-07-21T10:00:40.614+0000",
+        "normal_time": "2023-07-21T10:00:00.000+0000",
+        "price": 1.4036545245517009e-08,
+        "market_cap": 0.0,
+        "total_volume": 12881076.787525788
+      },
+      {
+        "time": 1689937240366,
+        "timestamp": "2023-07-21T11:00:40.366+0000",
+        "normal_time": "2023-07-21T11:00:00.000+0000",
+        "price": 1.5144976799107194e-08,
+        "market_cap": 0.0,
+        "total_volume": 14083179.964626756
+      },
+      {
+        "time": 1689940832089,
+        "timestamp": "2023-07-21T12:00:32.089+0000",
+        "normal_time": "2023-07-21T12:00:00.000+0000",
+        "price": 1.3859413061102553e-08,
+        "market_cap": 0.0,
+        "total_volume": 12253361.49286076
+      },
+      {
+        "time": 1689944434437,
+        "timestamp": "2023-07-21T13:00:34.437+0000",
+        "normal_time": "2023-07-21T13:00:00.000+0000",
+        "price": 1.5821176752604632e-08,
+        "market_cap": 0.0,
+        "total_volume": 13853247.565863144
+      },
+      {
+        "time": 1689948031978,
+        "timestamp": "2023-07-21T14:00:31.978+0000",
+        "normal_time": "2023-07-21T14:00:00.000+0000",
+        "price": 1.5267023968880524e-08,
+        "market_cap": 0.0,
+        "total_volume": 13274383.573692229
+      }
+    ]
+  },
+  {
+    "source": "coingecko",
+    "dataset": "COIN_MARKET_CHART/hourly",
+    "symbol": "1000BONKUSDC",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGECKO_v3/NORMAL/COIN_MARKET_CHART/hourly/1000BONKUSDC/2022-12-01.csv",
+    "n_rows": 63,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "normal_time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "normal_time": "object",
+      "price": "float64",
+      "market_cap": "float64",
+      "total_volume": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:27:52.304483500",
+    "max_time": "1970-01-01 00:27:52.527663356",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "normal_time": 0.0,
+      "price": 0.0,
+      "market_cap": 0.0,
+      "total_volume": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "sample_head": [
+      {
+        "time": 1672304483500,
+        "timestamp": "2022-12-29T09:01:23.500+0000",
+        "normal_time": "2022-12-29T09:00:00.000+0000",
+        "price": 1.250801647996199e-07,
+        "market_cap": 0.0,
+        "total_volume": 916879.7643660784
+      },
+      {
+        "time": 1672308114590,
+        "timestamp": "2022-12-29T10:01:54.590+0000",
+        "normal_time": "2022-12-29T10:00:00.000+0000",
+        "price": 1.28137481643448e-07,
+        "market_cap": 0.0,
+        "total_volume": 928512.6115950008
+      },
+      {
+        "time": 1672311715130,
+        "timestamp": "2022-12-29T11:01:55.130+0000",
+        "normal_time": "2022-12-29T11:00:00.000+0000",
+        "price": 1.2836110689681528e-07,
+        "market_cap": 0.0,
+        "total_volume": 926955.3006454216
+      },
+      {
+        "time": 1672315223320,
+        "timestamp": "2022-12-29T12:00:23.320+0000",
+        "normal_time": "2022-12-29T12:00:00.000+0000",
+        "price": 1.3730791828355248e-07,
+        "market_cap": 0.0,
+        "total_volume": 923846.2210019062
+      },
+      {
+        "time": 1672318916457,
+        "timestamp": "2022-12-29T13:01:56.457+0000",
+        "normal_time": "2022-12-29T13:00:00.000+0000",
+        "price": 1.3016305023907994e-07,
+        "market_cap": 0.0,
+        "total_volume": 952305.2138211118
+      }
+    ]
+  },
+  {
+    "source": "coingecko",
+    "dataset": "COIN_MARKET_CHART/hourly",
+    "symbol": "1000BONKUSDT",
+    "file_path": "/data/qr/ALTERNATIVE_DATA/COINGECKO_v3/NORMAL/COIN_MARKET_CHART/hourly/1000BONKUSDT/2022-12-01.csv",
+    "n_rows": 63,
+    "n_cols": 6,
+    "columns": [
+      "time",
+      "timestamp",
+      "normal_time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "dtypes": {
+      "time": "int64",
+      "timestamp": "object",
+      "normal_time": "object",
+      "price": "float64",
+      "market_cap": "float64",
+      "total_volume": "float64"
+    },
+    "time_col": "time",
+    "symbol_col": null,
+    "parseable_time_ratio": 1.0,
+    "min_time": "1970-01-01 00:27:52.304483500",
+    "max_time": "1970-01-01 00:27:52.527663356",
+    "duplicated_time_rows": 0,
+    "null_ratio_by_col": {
+      "time": 0.0,
+      "timestamp": 0.0,
+      "normal_time": 0.0,
+      "price": 0.0,
+      "market_cap": 0.0,
+      "total_volume": 0.0
+    },
+    "numeric_cols": [
+      "time",
+      "price",
+      "market_cap",
+      "total_volume"
+    ],
+    "sample_head": [
+      {
+        "time": 1672304483500,
+        "timestamp": "2022-12-29T09:01:23.500+0000",
+        "normal_time": "2022-12-29T09:00:00.000+0000",
+        "price": 1.250801647996199e-07,
+        "market_cap": 0.0,
+        "total_volume": 916879.7643660784
+      },
+      {
+        "time": 1672308114590,
+        "timestamp": "2022-12-29T10:01:54.590+0000",
+        "normal_time": "2022-12-29T10:00:00.000+0000",
+        "price": 1.28137481643448e-07,
+        "market_cap": 0.0,
+        "total_volume": 928512.6115950008
+      },
+      {
+        "time": 1672311715130,
+        "timestamp": "2022-12-29T11:01:55.130+0000",
+        "normal_time": "2022-12-29T11:00:00.000+0000",
+        "price": 1.2836110689681528e-07,
+        "market_cap": 0.0,
+        "total_volume": 926955.3006454216
+      },
+      {
+        "time": 1672315223320,
+        "timestamp": "2022-12-29T12:00:23.320+0000",
+        "normal_time": "2022-12-29T12:00:00.000+0000",
+        "price": 1.3730791828355248e-07,
+        "market_cap": 0.0,
+        "total_volume": 923846.2210019062
+      },
+      {
+        "time": 1672318916457,
+        "timestamp": "2022-12-29T13:01:56.457+0000",
+        "normal_time": "2022-12-29T13:00:00.000+0000",
+        "price": 1.3016305023907994e-07,
+        "market_cap": 0.0,
+        "total_volume": 952305.2138211118
+      }
+    ]
+  },
+  {
+    "source": "cryptoracle",
+    "dataset": "active_community_count",
+    "symbol": "1000XUSDT",
+    "file_path": "/home/joyce/cryptoracle/cryptoracle_data/NORMAL/active_community_count/1h/1000XUSDT/2025-01.csv",
+    "n_rows": 742,
+    "n_cols": 11,
+    "columns": [
+      "symbol",
+      "coin",
+      "metric_name",
+      "display_name",
+      "endpoint",
+      "interval",
+      "request_start_time",
+      "request_end_time",
+      "start_time",
+      "end_time",
+      "value"
+    ],
+    "dtypes": {
+      "symbol": "object",
+      "coin": "object",
+      "metric_name": "object",
+      "display_name": "object",
+      "endpoint": "object",
+      "interval": "object",
+      "request_start_time": "object",
+      "request_end_time": "object",
+      "start_time": "object",
+      "end_time": "object",
+      "value": "int64"
+    },
+    "time_col": null,
+    "symbol_col": "symbol",
+    "parseable_time_ratio": null,
+    "min_time": null,
+    "max_time": null,
+    "duplicated_time_rows": null,
+    "null_ratio_by_col": {
+      "symbol": 0.0,
+      "coin": 0.0,
+      "metric_name": 0.0,
+      "display_name": 0.0,
+      "endpoint": 0.0,
+      "interval": 0.0,
+      "request_start_time": 0.0,
+      "request_end_time": 0.0,
+      "start_time": 0.0,
+      "end_time": 0.0,
+      "value": 0.0
+    },
+    "numeric_cols": [
+      "value"
+    ],
+    "sample_head": [
+      {
+        "symbol": "1000XUSDT",
+        "coin": "1000X",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 00:00:00",
+        "end_time": "2025-01-01 01:00:00",
+        "value": 0
+      },
+      {
+        "symbol": "1000XUSDT",
+        "coin": "1000X",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 01:00:00",
+        "end_time": "2025-01-01 02:00:00",
+        "value": 0
+      },
+      {
+        "symbol": "1000XUSDT",
+        "coin": "1000X",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 02:00:00",
+        "end_time": "2025-01-01 03:00:00",
+        "value": 2
+      },
+      {
+        "symbol": "1000XUSDT",
+        "coin": "1000X",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 03:00:00",
+        "end_time": "2025-01-01 04:00:00",
+        "value": 0
+      },
+      {
+        "symbol": "1000XUSDT",
+        "coin": "1000X",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 04:00:00",
+        "end_time": "2025-01-01 05:00:00",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "source": "cryptoracle",
+    "dataset": "active_community_count",
+    "symbol": "1INCHUSDT",
+    "file_path": "/home/joyce/cryptoracle/cryptoracle_data/NORMAL/active_community_count/1h/1INCHUSDT/2025-01.csv",
+    "n_rows": 742,
+    "n_cols": 11,
+    "columns": [
+      "symbol",
+      "coin",
+      "metric_name",
+      "display_name",
+      "endpoint",
+      "interval",
+      "request_start_time",
+      "request_end_time",
+      "start_time",
+      "end_time",
+      "value"
+    ],
+    "dtypes": {
+      "symbol": "object",
+      "coin": "object",
+      "metric_name": "object",
+      "display_name": "object",
+      "endpoint": "object",
+      "interval": "object",
+      "request_start_time": "object",
+      "request_end_time": "object",
+      "start_time": "object",
+      "end_time": "object",
+      "value": "int64"
+    },
+    "time_col": null,
+    "symbol_col": "symbol",
+    "parseable_time_ratio": null,
+    "min_time": null,
+    "max_time": null,
+    "duplicated_time_rows": null,
+    "null_ratio_by_col": {
+      "symbol": 0.0,
+      "coin": 0.0,
+      "metric_name": 0.0,
+      "display_name": 0.0,
+      "endpoint": 0.0,
+      "interval": 0.0,
+      "request_start_time": 0.0,
+      "request_end_time": 0.0,
+      "start_time": 0.0,
+      "end_time": 0.0,
+      "value": 0.0
+    },
+    "numeric_cols": [
+      "value"
+    ],
+    "sample_head": [
+      {
+        "symbol": "1INCHUSDT",
+        "coin": "1INCH",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 00:00:00",
+        "end_time": "2025-01-01 01:00:00",
+        "value": 1
+      },
+      {
+        "symbol": "1INCHUSDT",
+        "coin": "1INCH",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 01:00:00",
+        "end_time": "2025-01-01 02:00:00",
+        "value": 3
+      },
+      {
+        "symbol": "1INCHUSDT",
+        "coin": "1INCH",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 02:00:00",
+        "end_time": "2025-01-01 03:00:00",
+        "value": 3
+      },
+      {
+        "symbol": "1INCHUSDT",
+        "coin": "1INCH",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 03:00:00",
+        "end_time": "2025-01-01 04:00:00",
+        "value": 0
+      },
+      {
+        "symbol": "1INCHUSDT",
+        "coin": "1INCH",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 04:00:00",
+        "end_time": "2025-01-01 05:00:00",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "source": "cryptoracle",
+    "dataset": "active_community_count",
+    "symbol": "A2ZUSDT",
+    "file_path": "/home/joyce/cryptoracle/cryptoracle_data/NORMAL/active_community_count/1h/A2ZUSDT/2025-01.csv",
+    "n_rows": 0,
+    "n_cols": 11,
+    "columns": [
+      "symbol",
+      "coin",
+      "metric_name",
+      "display_name",
+      "endpoint",
+      "interval",
+      "request_start_time",
+      "request_end_time",
+      "start_time",
+      "end_time",
+      "value"
+    ],
+    "dtypes": {
+      "symbol": "object",
+      "coin": "object",
+      "metric_name": "object",
+      "display_name": "object",
+      "endpoint": "object",
+      "interval": "object",
+      "request_start_time": "object",
+      "request_end_time": "object",
+      "start_time": "object",
+      "end_time": "object",
+      "value": "object"
+    },
+    "time_col": null,
+    "symbol_col": "symbol",
+    "parseable_time_ratio": null,
+    "min_time": null,
+    "max_time": null,
+    "duplicated_time_rows": null,
+    "null_ratio_by_col": {
+      "symbol": NaN,
+      "coin": NaN,
+      "metric_name": NaN,
+      "display_name": NaN,
+      "endpoint": NaN,
+      "interval": NaN,
+      "request_start_time": NaN,
+      "request_end_time": NaN,
+      "start_time": NaN,
+      "end_time": NaN,
+      "value": NaN
+    },
+    "numeric_cols": [],
+    "sample_head": []
+  },
+  {
+    "source": "cryptoracle",
+    "dataset": "active_community_count",
+    "symbol": "AAVEUSDT",
+    "file_path": "/home/joyce/cryptoracle/cryptoracle_data/NORMAL/active_community_count/1h/AAVEUSDT/2025-01.csv",
+    "n_rows": 742,
+    "n_cols": 11,
+    "columns": [
+      "symbol",
+      "coin",
+      "metric_name",
+      "display_name",
+      "endpoint",
+      "interval",
+      "request_start_time",
+      "request_end_time",
+      "start_time",
+      "end_time",
+      "value"
+    ],
+    "dtypes": {
+      "symbol": "object",
+      "coin": "object",
+      "metric_name": "object",
+      "display_name": "object",
+      "endpoint": "object",
+      "interval": "object",
+      "request_start_time": "object",
+      "request_end_time": "object",
+      "start_time": "object",
+      "end_time": "object",
+      "value": "int64"
+    },
+    "time_col": null,
+    "symbol_col": "symbol",
+    "parseable_time_ratio": null,
+    "min_time": null,
+    "max_time": null,
+    "duplicated_time_rows": null,
+    "null_ratio_by_col": {
+      "symbol": 0.0,
+      "coin": 0.0,
+      "metric_name": 0.0,
+      "display_name": 0.0,
+      "endpoint": 0.0,
+      "interval": 0.0,
+      "request_start_time": 0.0,
+      "request_end_time": 0.0,
+      "start_time": 0.0,
+      "end_time": 0.0,
+      "value": 0.0
+    },
+    "numeric_cols": [
+      "value"
+    ],
+    "sample_head": [
+      {
+        "symbol": "AAVEUSDT",
+        "coin": "AAVE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 00:00:00",
+        "end_time": "2025-01-01 01:00:00",
+        "value": 3
+      },
+      {
+        "symbol": "AAVEUSDT",
+        "coin": "AAVE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 01:00:00",
+        "end_time": "2025-01-01 02:00:00",
+        "value": 8
+      },
+      {
+        "symbol": "AAVEUSDT",
+        "coin": "AAVE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 02:00:00",
+        "end_time": "2025-01-01 03:00:00",
+        "value": 3
+      },
+      {
+        "symbol": "AAVEUSDT",
+        "coin": "AAVE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 03:00:00",
+        "end_time": "2025-01-01 04:00:00",
+        "value": 2
+      },
+      {
+        "symbol": "AAVEUSDT",
+        "coin": "AAVE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 04:00:00",
+        "end_time": "2025-01-01 05:00:00",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "source": "cryptoracle",
+    "dataset": "active_community_count",
+    "symbol": "ACEUSDT",
+    "file_path": "/home/joyce/cryptoracle/cryptoracle_data/NORMAL/active_community_count/1h/ACEUSDT/2025-01.csv",
+    "n_rows": 742,
+    "n_cols": 11,
+    "columns": [
+      "symbol",
+      "coin",
+      "metric_name",
+      "display_name",
+      "endpoint",
+      "interval",
+      "request_start_time",
+      "request_end_time",
+      "start_time",
+      "end_time",
+      "value"
+    ],
+    "dtypes": {
+      "symbol": "object",
+      "coin": "object",
+      "metric_name": "object",
+      "display_name": "object",
+      "endpoint": "object",
+      "interval": "object",
+      "request_start_time": "object",
+      "request_end_time": "object",
+      "start_time": "object",
+      "end_time": "object",
+      "value": "int64"
+    },
+    "time_col": null,
+    "symbol_col": "symbol",
+    "parseable_time_ratio": null,
+    "min_time": null,
+    "max_time": null,
+    "duplicated_time_rows": null,
+    "null_ratio_by_col": {
+      "symbol": 0.0,
+      "coin": 0.0,
+      "metric_name": 0.0,
+      "display_name": 0.0,
+      "endpoint": 0.0,
+      "interval": 0.0,
+      "request_start_time": 0.0,
+      "request_end_time": 0.0,
+      "start_time": 0.0,
+      "end_time": 0.0,
+      "value": 0.0
+    },
+    "numeric_cols": [
+      "value"
+    ],
+    "sample_head": [
+      {
+        "symbol": "ACEUSDT",
+        "coin": "ACE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 00:00:00",
+        "end_time": "2025-01-01 01:00:00",
+        "value": 4
+      },
+      {
+        "symbol": "ACEUSDT",
+        "coin": "ACE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 01:00:00",
+        "end_time": "2025-01-01 02:00:00",
+        "value": 4
+      },
+      {
+        "symbol": "ACEUSDT",
+        "coin": "ACE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 02:00:00",
+        "end_time": "2025-01-01 03:00:00",
+        "value": 5
+      },
+      {
+        "symbol": "ACEUSDT",
+        "coin": "ACE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 03:00:00",
+        "end_time": "2025-01-01 04:00:00",
+        "value": 2
+      },
+      {
+        "symbol": "ACEUSDT",
+        "coin": "ACE",
+        "metric_name": "active_community_count",
+        "display_name": "Active Community Count",
+        "endpoint": "CO-A-01-08",
+        "interval": "1h",
+        "request_start_time": "2025-01-01 00:00:00",
+        "request_end_time": "2025-01-15 23:00:00",
+        "start_time": "2025-01-01 04:00:00",
+        "end_time": "2025-01-01 05:00:00",
+        "value": 3
+      }
+    ]
+  }
+]

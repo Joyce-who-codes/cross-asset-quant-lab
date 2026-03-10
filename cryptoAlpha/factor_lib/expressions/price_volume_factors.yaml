@@ -1,0 +1,5 @@
+factors:
+  - name: ret_1h
+    expression: close / delay(close, 1) - 1
+  - name: vol_zscore_24h
+    expression: zscore(volume, 24)

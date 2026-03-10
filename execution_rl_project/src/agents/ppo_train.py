@@ -55,7 +55,7 @@ def main() -> None:
     )
 
     model.learn(total_timesteps=train_cfg["total_timesteps"])
-    model.save(str(model_dir / "ppo_execution_agent"))
+    model.save(str(model_dir / "ppo_execution_agent_with_alpha_reward2"))
 
     env.close()
 
