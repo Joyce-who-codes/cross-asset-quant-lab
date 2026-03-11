@@ -19,9 +19,9 @@ ACTION_NAME = {
 def main() -> None:
     env_cfg = load_yaml("configs/env.yaml")
 
-    book_path = "/home/joyce/test.csv"
-    trade_path = "/home/joyce/test_trades.csv"
-    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/test_book.csv"
+    book_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/incremental_book_L2/BTCUSDT_2025-12-05_2025-12-07.csv"
+    trade_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/trades/BTCUSDT_2025-12-05_2025-12-07.csv"
+    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/BTCUSDT_2025-12-05_2025-12-07.csv.gz"
 
     env = ExecutionEnv(
         env_cfg=env_cfg,
@@ -31,7 +31,7 @@ def main() -> None:
     )
     model = PPO.load("/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints/ppo_execution_agent_with_alpha_reward2.zip")
 
-    obs, info = env.reset()
+    obs, info = env.reset(options={"start_idx": 2000})
     done = False
     total_reward = 0.0
     action_counter = Counter()
@@ -71,6 +71,11 @@ def main() -> None:
                 "delta_fill": round(delta_fill, 6),
                 "cum_filled": round(filled_qty, 6),
                 "remaining": round(remaining_qty, 6),
+                "exec_reward": round(float(step_info["exec_reward"]), 6),
+                "taker_penalty": round(float(step_info["taker_penalty"]), 6),
+                "wait_penalty": round(float(step_info["wait_penalty"]), 6),
+                "terminal_penalty": round(float(step_info["terminal_penalty"]), 6),
+                "alpha_pred": round(float(step_info["alpha_pred"]), 6) if step_info["alpha_pred"] is not None else None,
                 "done": done,
             }
         )
@@ -99,6 +104,11 @@ def main() -> None:
             f"bid/ask_before=({row['best_bid_before']:.2f}, {row['best_ask_before']:.2f}) | "
             f"bid/ask_after=({row['best_bid_after']:.2f}, {row['best_ask_after']:.2f}) | "
             f"reward={row['reward']:+.6f} | "
+            f"exec={row['exec_reward']:+.6f} | "
+            f"wait={row['wait_penalty']:+.6f} | "
+            f"taker={row['taker_penalty']:+.6f} | "
+            f"terminal={row['terminal_penalty']:+.6f} | "
+            f"alpha={row['alpha_pred']:+.6f} | "
             f"delta_fill={row['delta_fill']:.6f} | "
             f"cum_filled={row['cum_filled']:.6f} | "
             f"remaining={row['remaining']:.6f} | "

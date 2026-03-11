@@ -85,6 +85,33 @@ class OrderBookReplay:
 
         self.snapshot_ts_arr: np.ndarray | None = None
 
+    def _require_event_arrays(
+        self,
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        if (
+            self.ev_code_arr is None
+            or self.exch_ts_arr is None
+            or self.is_snapshot_arr is None
+            or self.side_code_arr is None
+            or self.price_arr is None
+            or self.amount_arr is None
+        ):
+            raise RuntimeError("event arrays are not initialized; call reset() first")
+
+        return (
+            self.ev_code_arr,
+            self.exch_ts_arr,
+            self.is_snapshot_arr,
+            self.side_code_arr,
+            self.price_arr,
+            self.amount_arr,
+        )
+
+    def _require_snapshot_ts_arr(self) -> np.ndarray:
+        if self.snapshot_ts_arr is None:
+            raise RuntimeError("snapshot timestamps are not initialized")
+        return self.snapshot_ts_arr
+
     # ----------------------------
     # public api
     # ----------------------------
@@ -108,8 +135,10 @@ class OrderBookReplay:
             self.snapshots = None
             self.snapshot_ts_arr = None
 
+        _, exch_ts_arr, _, _, _, _ = self._require_event_arrays()
+
         self.current_idx = 0
-        self.current_ts = int(self.exch_ts_arr[0])
+        self.current_ts = int(exch_ts_arr[0])
 
         self.bid_qty.fill(0.0)
         self.ask_qty.fill(0.0)
@@ -126,8 +155,8 @@ class OrderBookReplay:
         if self.n_events == 0:
             return
 
+        _, exch_ts_arr, _, _, _, _ = self._require_event_arrays()
         idx = self.current_idx
-        exch_ts_arr = self.exch_ts_arr
 
         while idx < self.n_events and int(exch_ts_arr[idx]) <= target_exch_ts:
             self._apply_event_idx(idx)
@@ -201,8 +230,9 @@ class OrderBookReplay:
     # bootstrap
     # ----------------------------
     def _bootstrap_book(self, start_idx: int) -> None:
+        _, exch_ts_arr, _, _, _, _ = self._require_event_arrays()
         start_idx = max(0, min(start_idx, self.n_events - 1))
-        start_ts = int(self.exch_ts_arr[start_idx])
+        start_ts = int(exch_ts_arr[start_idx])
 
         if (
             self.snapshots is not None
@@ -222,9 +252,10 @@ class OrderBookReplay:
 
     def _bootstrap_from_snapshot25(self, start_ts: int) -> int:
         assert self.snapshots is not None
-        assert self.snapshot_ts_arr is not None
+        snapshot_ts_arr = self._require_snapshot_ts_arr()
+        _, exch_ts_arr, _, _, _, _ = self._require_event_arrays()
 
-        pos = np.searchsorted(self.snapshot_ts_arr, start_ts, side="right") - 1
+        pos = np.searchsorted(snapshot_ts_arr, start_ts, side="right") - 1
         if pos < 0:
             return 0
 
@@ -250,14 +281,15 @@ class OrderBookReplay:
         self._recompute_best_ask()
         self.current_ts = snap_ts
 
-        replay_start_idx = int(np.searchsorted(self.exch_ts_arr, snap_ts, side="right"))
+        replay_start_idx = int(np.searchsorted(exch_ts_arr, snap_ts, side="right"))
         return replay_start_idx
 
     def _bootstrap_from_embedded_snapshot(self, start_idx: int) -> int:
+        ev_code_arr, exch_ts_arr, is_snapshot_arr, _, _, _ = self._require_event_arrays()
         snap_ts = None
         for i in range(start_idx, -1, -1):
-            if self.ev_code_arr[i] == 0 and bool(self.is_snapshot_arr[i]):
-                snap_ts = int(self.exch_ts_arr[i])
+            if ev_code_arr[i] == 0 and bool(is_snapshot_arr[i]):
+                snap_ts = int(exch_ts_arr[i])
                 break
 
         if snap_ts is None:
@@ -267,7 +299,7 @@ class OrderBookReplay:
             self.best_ask_idx = -1
             return 0
 
-        snap_start = int(np.searchsorted(self.exch_ts_arr, snap_ts, side="left"))
+        snap_start = int(np.searchsorted(exch_ts_arr, snap_ts, side="left"))
 
         self.bid_qty.fill(0.0)
         self.ask_qty.fill(0.0)
@@ -277,9 +309,9 @@ class OrderBookReplay:
         i = snap_start
         while i < self.n_events:
             if not (
-                self.ev_code_arr[i] == 0
-                and bool(self.is_snapshot_arr[i])
-                and int(self.exch_ts_arr[i]) == snap_ts
+                ev_code_arr[i] == 0
+                and bool(is_snapshot_arr[i])
+                and int(exch_ts_arr[i]) == snap_ts
             ):
                 break
             self._apply_book_idx(i)
@@ -291,13 +323,14 @@ class OrderBookReplay:
     # apply events
     # ----------------------------
     def _apply_book_idx(self, idx: int) -> None:
-        side_code = int(self.side_code_arr[idx])
-        price = float(self.price_arr[idx])
-        amount = float(self.amount_arr[idx])
+        _, exch_ts_arr, _, side_code_arr, price_arr, amount_arr = self._require_event_arrays()
+        side_code = int(side_code_arr[idx])
+        price = float(price_arr[idx])
+        amount = float(amount_arr[idx])
 
         price_idx = self._price_to_idx(price)
         if not self._valid_idx(price_idx):
-            self.current_ts = int(self.exch_ts_arr[idx])
+            self.current_ts = int(exch_ts_arr[idx])
             return
 
         if side_code == 0:  # bid
@@ -324,11 +357,12 @@ class OrderBookReplay:
                     if self.best_ask_idx >= self.n_levels:
                         self.best_ask_idx = -1
 
-        self.current_ts = int(self.exch_ts_arr[idx])
+        self.current_ts = int(exch_ts_arr[idx])
 
     def _apply_trade_idx(self, idx: int) -> None:
-        side_code = int(self.side_code_arr[idx])
-        amount = float(self.amount_arr[idx])
+        _, exch_ts_arr, _, side_code_arr, _, amount_arr = self._require_event_arrays()
+        side_code = int(side_code_arr[idx])
+        amount = float(amount_arr[idx])
 
         sign_amount = amount if side_code == 2 else -amount
 
@@ -345,10 +379,11 @@ class OrderBookReplay:
         else:
             self.sell_vol += -sign_amount
 
-        self.current_ts = int(self.exch_ts_arr[idx])
+        self.current_ts = int(exch_ts_arr[idx])
 
     def _apply_event_idx(self, idx: int) -> None:
-        if self.ev_code_arr[idx] == 0:
+        ev_code_arr, _, _, _, _, _ = self._require_event_arrays()
+        if ev_code_arr[idx] == 0:
             self._apply_book_idx(idx)
         else:
             self._apply_trade_idx(idx)

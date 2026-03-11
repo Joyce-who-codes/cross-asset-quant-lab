@@ -23,9 +23,9 @@ def main() -> None:
 
     model_dir = ensure_dir(train_cfg["model_dir"])
 
-    book_path = "/home/joyce/test.csv"
-    trade_path = "/home/joyce/test_trades.csv"
-    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/test_book.csv"
+    book_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/incremental_book_L2/BTCUSDT_2025-12-05_2025-12-07.csv"
+    trade_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/trades/BTCUSDT_2025-12-05_2025-12-07.csv"
+    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/BTCUSDT_2025-12-05_2025-12-07.csv.gz"
 
     env = ExecutionEnv(
         env_cfg=env_cfg,

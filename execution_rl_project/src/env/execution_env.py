@@ -66,8 +66,8 @@ class ExecutionEnv(gym.Env):
         self.current_step = 0
         self.filled_qty = 0.0
         self.alpha_model = OnlineMicroAlpha(
-            model_path="results/microalpha/ridge_alpha.pkl",
-            alpha_scale=10000.0,
+            model_path="results/microalpha_v2/ridge_alpha.pkl",
+            alpha_scale=1,
         )
         obs_dim = 4 + 5 + 5 + 5 + 5 + 5 + 6+1
         self.action_space = spaces.Discrete(5)
@@ -79,8 +79,9 @@ class ExecutionEnv(gym.Env):
         )
 
     def _sample_start_idx(self) -> int:
-        usable = max(1, self.wrapper.num_events() - 5000)
-        return random.randint(0, usable - 1)
+        min_start = 2000
+        usable = max(min_start + 1, self.wrapper.num_events() - 5000)
+        return random.randint(min_start, usable - 1)
 
     def _get_obs(self) -> np.ndarray:
         state = self.wrapper.get_market_state()
@@ -104,7 +105,8 @@ class ExecutionEnv(gym.Env):
             active_order_price_offset=self.wrapper.active_order_price_offset(),
         )
 
-        alpha_pred = self.alpha_model.predict(state)
+        alpha_pred = float(self.alpha_model.predict(state))
+        alpha_pred = np.clip(alpha_pred, -1.0, 1.0)
         alpha_feat = np.array([alpha_pred], dtype=np.float32)
 
         return np.concatenate([lob_feats, exec_feats, alpha_feat], axis=0).astype(np.float32)
@@ -131,7 +133,7 @@ class ExecutionEnv(gym.Env):
         state = self.wrapper.get_market_state()
         best_bid = state.best_bid
         decision_mid = 0.5 * (state.best_bid + state.best_ask)
-
+        alpha_pred_step = float(self.alpha_model.predict(state))
         filled_now = 0.0
         avg_fill_price = 0.0
         is_taker_fill = False
@@ -179,7 +181,7 @@ class ExecutionEnv(gym.Env):
         remaining_qty = max(0.0, self.target_qty - self.filled_qty)
         urgency = ((self.current_step + 1) / max(self.max_steps, 1)) ** 2
 
-        reward = compute_step_reward(
+        reward, reward_parts = compute_step_reward(
             decision_mid_price=decision_mid,
             filled_qty=filled_now,
             avg_fill_price=avg_fill_price,
@@ -190,17 +192,20 @@ class ExecutionEnv(gym.Env):
             exec_cost_coef=self.exec_cost_coef,
             taker_penalty_coef=self.taker_penalty_coef,
             is_taker_fill=is_taker_fill,
+            alpha_signal=alpha_pred_step,
         )
 
         terminated = remaining_qty <= 1e-12
         truncated = self.current_step >= self.max_steps or self.wrapper.is_done()
 
+        terminal_penalty = 0.0
         if truncated and not terminated:
-            reward += compute_terminal_penalty(
+            terminal_penalty = compute_terminal_penalty(
                 remaining_qty=remaining_qty,
                 target_qty=self.target_qty,
                 lambda_terminal_remain=self.lambda_terminal_remain,
             )
+            reward += terminal_penalty
 
         obs = self._get_obs()
         info = {
@@ -208,5 +213,11 @@ class ExecutionEnv(gym.Env):
             "remaining_qty": remaining_qty,
             "equity": self.wrapper.mark_to_market_equity(),
             "position": self.wrapper.get_position(),
-        }
+            "exec_reward": reward_parts["exec_reward"],
+            "taker_penalty": reward_parts["taker_penalty"],
+            "wait_penalty": reward_parts["wait_penalty"],
+            "terminal_penalty": float(terminal_penalty),
+            "alpha_pred": alpha_pred_step,
+            "alpha_wait_multiplier": reward_parts["alpha_wait_multiplier"],
+        }     
         return obs, reward, terminated, truncated, info

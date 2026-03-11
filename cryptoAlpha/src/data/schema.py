@@ -111,7 +111,10 @@ def standardize_dataset_df(
 
     time_col = _pick_existing_column(df, spec["time_candidates"])
     out = pd.DataFrame()
-    out["datetime"] = pd.to_datetime(df[time_col], errors="coerce", utc=False)
+    out["datetime"] = (
+        pd.to_datetime(df[time_col], errors="coerce", utc=True)
+        .dt.tz_localize(None)
+    )
     out["symbol"] = symbol
 
     for raw_col, std_col in spec["column_map"].items():

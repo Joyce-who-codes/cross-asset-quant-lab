@@ -29,9 +29,9 @@ def main() -> None:
     env_cfg = load_yaml(str(env_cfg_path))
     print("[main] env config loaded")
 
-    book_path = "/home/joyce/test.csv"
-    trade_path = "/home/joyce/test_trades.csv"
-    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/test_book.csv"
+    book_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/incremental_book_L2/BTCUSDT_2025-12-05_2025-12-07.csv"
+    trade_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/trades/BTCUSDT_2025-12-05_2025-12-07.csv"
+    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/BTCUSDT_2025-12-05_2025-12-07.csv.gz"
 
     print(f"[main] book_path={book_path}")
     print(f"[main] trade_path={trade_path}")
