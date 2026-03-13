@@ -10,7 +10,7 @@
 # device: cpu
 # model_dir: results/checkpoints
 seed: 132
-total_timesteps: 30000
+total_timesteps: 50000
 learning_rate: 0.0003
 n_steps: 512
 batch_size: 128

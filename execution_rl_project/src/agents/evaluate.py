@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from collections import Counter
+from typing import Any, cast
+
+import numpy as np
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
@@ -66,27 +69,27 @@ def main() -> None:
 
     done = False
     total_reward = 0.0
-    action_counter = Counter()
-    trace_rows = []
+    action_counter: Counter[str] = Counter()
+    trace_rows: list[dict[str, Any]] = []
 
     step_idx = 0
     prev_filled = 0.0
-    final_info = None
+    final_info: dict[str, Any] | None = None
+    raw_env = cast(ExecutionEnv, base_env.envs[0])
 
     while not done:
-        raw_env = env.venv.envs[0]
         state_before = raw_env.wrapper.get_market_state()
 
-        action, _ = model.predict(obs, deterministic=True)
+        action, _ = model.predict(cast(Any, obs), deterministic=True)
         action = int(action[0]) if not isinstance(action, int) else int(action)
         action_name = ACTION_NAME[action]
         action_counter[action_name] += 1
 
-        obs, reward, dones, infos = env.step([action])
+        obs, reward, dones, infos = env.step(np.array([action], dtype=np.int64))
         done = bool(dones[0])
 
         reward_scalar = float(reward[0])
-        step_info = infos[0]
+        step_info = cast(dict[str, Any], infos[0])
         final_info = step_info
         total_reward += reward_scalar
 
@@ -118,6 +121,9 @@ def main() -> None:
         )
 
         step_idx += 1
+
+    if final_info is None:
+        raise RuntimeError("Evaluation finished without producing any step info.")
 
     print("=== Evaluation Summary ===")
     print("total_reward:", round(total_reward, 6))

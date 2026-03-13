@@ -94,11 +94,11 @@ def main() -> None:
     print(f"[train] random_start={env_cfg['execution'].get('random_start', False)}")
 
     model.learn(total_timesteps=train_cfg["total_timesteps"], reset_num_timesteps=not resume)
-
-    model.save(str(model_path))
+    model_path_new = model_dir / "ppo_execution_agent_vecnorm_new"
+    model.save(str(model_path_new))
     env.save(str(vecnorm_path))
 
-    print(f"[train] saved model to {model_path}.zip")
+    print(f"[train] saved model to {model_path_new}.zip")
     print(f"[train] saved vecnormalize stats to {vecnorm_path}")
 
     env.close()
