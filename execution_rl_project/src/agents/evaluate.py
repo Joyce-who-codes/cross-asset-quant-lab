@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from collections import Counter
+
 from stable_baselines3 import PPO
+from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
 from src.env.execution_env import ExecutionEnv
 from src.utils.io import load_yaml
@@ -9,11 +11,28 @@ from src.utils.io import load_yaml
 
 ACTION_NAME = {
     0: "HOLD",
-    1: "PLACE_BID1",
-    2: "PLACE_BID2",
-    3: "MARKET_BUY_SMALL",
-    4: "CANCEL_ALL",
+    1: "BUY_LVL0",
+    2: "BUY_LVL1",
+    3: "BUY_LVL2",
+    4: "BUY_MARKET",
 }
+
+
+def make_env(
+    env_cfg: dict,
+    book_path: str,
+    trade_path: str,
+    snapshot_path: str | None,
+):
+    def _init():
+        return ExecutionEnv(
+            env_cfg=env_cfg,
+            book_path=book_path,
+            trade_path=trade_path,
+            snapshot_path=snapshot_path,
+        )
+
+    return _init
 
 
 def main() -> None:
@@ -23,15 +42,28 @@ def main() -> None:
     trade_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/trades/BTCUSDT_2025-12-05_2025-12-07.csv"
     snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/BTCUSDT_2025-12-05_2025-12-07.csv.gz"
 
-    env = ExecutionEnv(
-        env_cfg=env_cfg,
-        book_path=book_path,
-        trade_path=trade_path,
-        snapshot_path=snapshot_path,
+    base_env = DummyVecEnv(
+        [
+            make_env(
+                env_cfg=env_cfg,
+                book_path=book_path,
+                trade_path=trade_path,
+                snapshot_path=snapshot_path,
+            )
+        ]
     )
-    model = PPO.load("/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints/ppo_execution_agent_with_alpha_reward2.zip")
 
-    obs, info = env.reset(options={"start_idx": 2000})
+    vecnorm_path = "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints/vecnormalize_execution.pkl"
+    model_path = "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints/ppo_execution_agent_vecnorm.zip"
+
+    env = VecNormalize.load(vecnorm_path, base_env)
+    env.training = False
+    env.norm_reward = False
+
+    model = PPO.load(model_path, env=env)
+
+    obs = env.reset()
+
     done = False
     total_reward = 0.0
     action_counter = Counter()
@@ -39,20 +71,26 @@ def main() -> None:
 
     step_idx = 0
     prev_filled = 0.0
+    final_info = None
 
     while not done:
-        state_before = env.wrapper.get_market_state()
+        raw_env = env.venv.envs[0]
+        state_before = raw_env.wrapper.get_market_state()
 
         action, _ = model.predict(obs, deterministic=True)
-        action = int(action)
+        action = int(action[0]) if not isinstance(action, int) else int(action)
         action_name = ACTION_NAME[action]
         action_counter[action_name] += 1
 
-        obs, reward, terminated, truncated, step_info = env.step(action)
-        done = terminated or truncated
-        total_reward += reward
+        obs, reward, dones, infos = env.step([action])
+        done = bool(dones[0])
 
-        state_after = env.wrapper.get_market_state()
+        reward_scalar = float(reward[0])
+        step_info = infos[0]
+        final_info = step_info
+        total_reward += reward_scalar
+
+        state_after = raw_env.wrapper.get_market_state()
 
         filled_qty = float(step_info["filled_qty"])
         remaining_qty = float(step_info["remaining_qty"])
@@ -67,15 +105,14 @@ def main() -> None:
                 "best_ask_before": round(state_before.best_ask, 4),
                 "best_bid_after": round(state_after.best_bid, 4),
                 "best_ask_after": round(state_after.best_ask, 4),
-                "reward": round(float(reward), 6),
+                "reward": round(reward_scalar, 6),
+                "shortfall": round(float(step_info["shortfall"]), 6),
+                "shortfall_reward": round(float(step_info["shortfall_reward"]), 6),
+                "terminal_penalty": round(float(step_info["terminal_penalty"]), 6),
+                "avg_fill_price": round(float(step_info["avg_fill_price"]), 6),
                 "delta_fill": round(delta_fill, 6),
                 "cum_filled": round(filled_qty, 6),
                 "remaining": round(remaining_qty, 6),
-                "exec_reward": round(float(step_info["exec_reward"]), 6),
-                "taker_penalty": round(float(step_info["taker_penalty"]), 6),
-                "wait_penalty": round(float(step_info["wait_penalty"]), 6),
-                "terminal_penalty": round(float(step_info["terminal_penalty"]), 6),
-                "alpha_pred": round(float(step_info["alpha_pred"]), 6) if step_info["alpha_pred"] is not None else None,
                 "done": done,
             }
         )
@@ -84,36 +121,38 @@ def main() -> None:
 
     print("=== Evaluation Summary ===")
     print("total_reward:", round(total_reward, 6))
-    print("filled_qty:", round(float(step_info["filled_qty"]), 6))
-    print("remaining_qty:", round(float(step_info["remaining_qty"]), 6))
-    print("equity:", round(float(step_info["equity"]), 6))
+    print("arrival_price:", round(float(final_info["arrival_price"]), 6))
+    print("filled_qty:", round(float(final_info["filled_qty"]), 6))
+    print("remaining_qty:", round(float(final_info["remaining_qty"]), 6))
+    print("equity:", round(float(final_info["equity"]), 6))
     print()
 
     print("=== Action Counts ===")
     total_actions = sum(action_counter.values())
     for action_name, count in action_counter.items():
         pct = 100.0 * count / max(total_actions, 1)
-        print(f"{action_name:18s} {count:4d}  ({pct:6.2f}%)")
+        print(f"{action_name:12s} {count:4d}  ({pct:6.2f}%)")
     print()
 
     print("=== Step Trace ===")
     for row in trace_rows:
         print(
             f"step={row['step']:02d} | "
-            f"action={row['action']:16s} | "
+            f"action={row['action']:12s} | "
             f"bid/ask_before=({row['best_bid_before']:.2f}, {row['best_ask_before']:.2f}) | "
             f"bid/ask_after=({row['best_bid_after']:.2f}, {row['best_ask_after']:.2f}) | "
             f"reward={row['reward']:+.6f} | "
-            f"exec={row['exec_reward']:+.6f} | "
-            f"wait={row['wait_penalty']:+.6f} | "
-            f"taker={row['taker_penalty']:+.6f} | "
+            f"shortfall={row['shortfall']:+.6f} | "
+            f"shortfall_reward={row['shortfall_reward']:+.6f} | "
             f"terminal={row['terminal_penalty']:+.6f} | "
-            f"alpha={row['alpha_pred']:+.6f} | "
+            f"fill_px={row['avg_fill_price']:.6f} | "
             f"delta_fill={row['delta_fill']:.6f} | "
             f"cum_filled={row['cum_filled']:.6f} | "
             f"remaining={row['remaining']:.6f} | "
             f"done={row['done']}"
         )
+
+    env.close()
 
 
 if __name__ == "__main__":

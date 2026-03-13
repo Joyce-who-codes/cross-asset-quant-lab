@@ -1,22 +1,23 @@
-# seed: 42
-# total_timesteps: 2000
+# seed: 132
+# total_timesteps: 20000
 # learning_rate: 0.0003
-# n_steps: 256
-# batch_size: 64
+# n_steps: 512
+# batch_size: 128
 # gamma: 0.99
 # gae_lambda: 0.95
 # clip_range: 0.2
-# ent_coef: 0.001
+# ent_coef: 0.01
 # device: cpu
-# model_dir: results/checkpoints1
+# model_dir: results/checkpoints
 seed: 132
-total_timesteps: 10000
+total_timesteps: 30000
 learning_rate: 0.0003
-n_steps: 256
-batch_size: 64
+n_steps: 512
+batch_size: 128
 gamma: 0.99
 gae_lambda: 0.95
 clip_range: 0.2
-ent_coef: 0.01
+ent_coef: 0.02
 device: cpu
 model_dir: results/checkpoints
+resume: true
