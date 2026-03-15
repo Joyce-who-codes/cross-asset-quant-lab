@@ -50,6 +50,7 @@ class TardisExecutionWrapper:
         self.symbol = symbol
         self.maker_fee = maker_fee
         self.taker_fee = taker_fee
+        self.tick_size = tick_size
         self.top_k = top_k
 
         self.events: pd.DataFrame = load_merged_events(
@@ -113,15 +114,26 @@ class TardisExecutionWrapper:
         price = float(self.active_order["price"])
         qty = float(self.active_order["qty"])
 
-        if side != "buy":
-            raise NotImplementedError("current MVP only supports buy side")
+        if side == "buy":
+            if state.best_ask <= price:
+                fee = price * qty * self.maker_fee
+                self.position += qty
+                self.cash -= price * qty + fee
+                self.active_order = None
 
-        if state.best_ask <= price:
-            fee = price * qty * self.maker_fee
-            self.position += qty
-            self.cash -= price * qty + fee
-            self.active_order = None
+        elif side == "sell":
+            if state.best_bid >= price:
+                fee = price * qty * self.maker_fee
+                self.position -= qty
+                self.cash += price * qty - fee
+                self.active_order = None
 
+        else:
+            raise ValueError(f"unsupported side: {side}")
+
+    # -------------------------
+    # Buy-side methods
+    # -------------------------
     def place_limit_buy(self, price: float, qty: float) -> None:
         state = self.replay.get_market_state()
 
@@ -141,10 +153,38 @@ class TardisExecutionWrapper:
 
     def place_market_buy(self, qty: float) -> FillInfo:
         state = self.replay.get_market_state()
-        px = state.best_ask
+        px = float(state.best_ask)
         fee = px * qty * self.taker_fee
         self.position += qty
         self.cash -= px * qty + fee
+        return FillInfo(filled_qty=qty, avg_fill_price=px, fee=fee)
+
+    # -------------------------
+    # Sell-side methods
+    # -------------------------
+    def place_limit_sell(self, price: float, qty: float) -> None:
+        state = self.replay.get_market_state()
+
+        if price <= state.best_bid:
+            fee = state.best_bid * qty * self.taker_fee
+            self.position -= qty
+            self.cash += state.best_bid * qty - fee
+            self.active_order = None
+            return
+
+        self.active_order = {
+            "side": "sell",
+            "type": "limit",
+            "price": float(price),
+            "qty": float(qty),
+        }
+
+    def place_market_sell(self, qty: float) -> FillInfo:
+        state = self.replay.get_market_state()
+        px = float(state.best_bid)
+        fee = px * qty * self.taker_fee
+        self.position -= qty
+        self.cash += px * qty - fee
         return FillInfo(filled_qty=qty, avg_fill_price=px, fee=fee)
 
     def cancel_all(self) -> None:
@@ -153,19 +193,27 @@ class TardisExecutionWrapper:
     def has_active_order(self) -> bool:
         return self.active_order is not None
 
-    def active_order_price_offset(self) -> float:
+    def active_order_price_offset(self, side: str = "buy") -> float:
         if self.active_order is None:
             return 0.0
+
         state = self.replay.get_market_state()
-        return float(self.active_order["price"]) - state.best_bid
+        px = float(self.active_order["price"])
+
+        if side == "buy":
+            return px - float(state.best_bid)
+        elif side == "sell":
+            return px - float(state.best_ask)
+        else:
+            raise ValueError(f"unsupported side: {side}")
 
     def get_position(self) -> float:
-        return self.position
+        return float(self.position)
 
     def mark_to_market_equity(self) -> float:
         state = self.replay.get_market_state()
         mid = 0.5 * (state.best_bid + state.best_ask)
-        return self.cash + self.position * mid
+        return float(self.cash + self.position * mid)
 
     def is_done(self) -> bool:
         return self.replay.is_done()
