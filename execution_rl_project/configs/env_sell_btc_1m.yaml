@@ -1,0 +1,26 @@
+asset:
+  symbol: BTCUSDT
+  tick_size: 0.1
+  lot_size: 0.001
+
+backtest:
+  maker_fee: 0.0
+  taker_fee: 0.0002
+  entry_latency_ns: 1000000
+  response_latency_ns: 1000000
+  queue_model_power: 2.0
+  roi_lb: 10000
+  roi_ub: 200000
+
+execution:
+  side: sell
+  target_qty: 0.05
+  horizon_sec: 120
+  step_sec: 2
+  market_clip_qty: 0.005
+  max_active_orders: 1
+  start_idx: 2000
+  random_start: true
+
+reward:
+  lambda_terminal_remain: 3.0

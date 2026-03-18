@@ -28,6 +28,58 @@ TRADE_COLUMNS = [
     "amount",
 ]
 
+NORMALIZED_EVENT_COLUMNS = [
+    "event_type",
+    "exchange",
+    "symbol",
+    "exch_ts",
+    "local_ts",
+    "is_snapshot",
+    "side",
+    "price",
+    "amount",
+    "trade_id",
+]
+
+
+def _is_gzip_file(path: Path) -> bool:
+    with open(path, "rb") as f:
+        return f.read(2) == b"\x1f\x8b"
+
+
+def _read_csv_auto(path: Path) -> pd.DataFrame:
+    compression = "gzip" if _is_gzip_file(path) else None
+    return pd.read_csv(path, compression=compression)
+
+
+def _read_table_auto(path: Path) -> pd.DataFrame:
+    if path.suffix == ".parquet":
+        return pd.read_parquet(path)
+    return _read_csv_auto(path)
+
+
+def _load_normalized_event_parquet(
+    path: Path,
+    symbol: Optional[str] = None,
+) -> pd.DataFrame:
+    df = pd.read_parquet(path)
+
+    missing = [c for c in NORMALIZED_EVENT_COLUMNS if c not in df.columns]
+    if missing:
+        raise ValueError(f"normalized parquet missing columns: {missing}")
+
+    if symbol is not None:
+        df = df[df["symbol"] == symbol].copy()
+
+    df = df[NORMALIZED_EVENT_COLUMNS].copy()
+    df["exch_ts"] = df["exch_ts"].astype("int64")
+    df["local_ts"] = df["local_ts"].astype("int64")
+    df["is_snapshot"] = df["is_snapshot"].astype(bool)
+    df["side"] = df["side"].astype(str).str.lower()
+    df["price"] = pd.to_numeric(df["price"], errors="coerce").astype(float)
+    df["amount"] = pd.to_numeric(df["amount"], errors="coerce").astype(float)
+    return df.reset_index(drop=True)
+
 
 def _normalize_bool_col(df: pd.DataFrame, col: str) -> pd.Series:
     if col not in df.columns:
@@ -47,7 +99,10 @@ def load_incremental_book_csv(
     symbol: Optional[str] = None,
 ) -> pd.DataFrame:
     path = Path(path)
-    df = pd.read_csv(path)
+    if path.suffix == ".parquet":
+        return _load_normalized_event_parquet(path, symbol=symbol)
+
+    df = _read_csv_auto(path)
 
     missing = [c for c in BOOK_COLUMNS if c not in df.columns]
     if missing:
@@ -95,7 +150,10 @@ def load_trades_csv(
     symbol: Optional[str] = None,
 ) -> pd.DataFrame:
     path = Path(path)
-    df = pd.read_csv(path)
+    if path.suffix == ".parquet":
+        return _load_normalized_event_parquet(path, symbol=symbol)
+
+    df = _read_csv_auto(path)
 
     missing = [c for c in TRADE_COLUMNS if c not in df.columns]
     if missing:

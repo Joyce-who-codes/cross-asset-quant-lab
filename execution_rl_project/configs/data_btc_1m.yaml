@@ -1,0 +1,14 @@
+train:
+  book_path: /home/joyce/projects/data/raw/tardis/BTCUSDT/merged/incremental_book_L2/BTCUSDT_train_2025-12-01_2025-12-20.csv
+  trade_path: /home/joyce/projects/data/raw/tardis/BTCUSDT/merged/trades/BTCUSDT_train_2025-12-01_2025-12-20.csv
+  snapshot_path: /home/joyce/projects/data/raw/tardis/BTCUSDT/merged/snapshot_25/BTCUSDT_train_2025-12-01_2025-12-20.csv.gz
+
+val:
+  book_path: /home/joyce/projects/data/raw/tardis/BTCUSDT/merged/incremental_book_L2/BTCUSDT_val_2025-12-21_2025-12-25.csv
+  trade_path: /home/joyce/projects/data/raw/tardis/BTCUSDT/merged/trades/BTCUSDT_val_2025-12-21_2025-12-25.csv
+  snapshot_path: /home/joyce/projects/data/raw/tardis/BTCUSDT/merged/snapshot_25/BTCUSDT_val_2025-12-21_2025-12-25.csv.gz
+
+test:
+  book_path: /home/joyce/projects/data/raw/tardis/BTCUSDT/merged/incremental_book_L2/BTCUSDT_test_2025-12-26_2026-01-01.csv
+  trade_path: /home/joyce/projects/data/raw/tardis/BTCUSDT/merged/trades/BTCUSDT_test_2025-12-26_2026-01-01.csv
+  snapshot_path: /home/joyce/projects/data/raw/tardis/BTCUSDT/merged/snapshot_25/BTCUSDT_test_2025-12-26_2026-01-01.csv.gz

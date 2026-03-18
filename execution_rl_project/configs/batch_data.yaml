@@ -1,0 +1,12 @@
+local_root: /home/joyce/projects/data/raw/tardis
+
+splits:
+  train:
+    start_day: 2025-12-01
+    end_day: 2025-12-20
+  val:
+    start_day: 2025-12-21
+    end_day: 2025-12-25
+  test:
+    start_day: 2025-12-26
+    end_day: 2026-01-01

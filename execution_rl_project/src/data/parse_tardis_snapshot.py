@@ -6,6 +6,22 @@ from typing import Optional
 import pandas as pd
 
 
+def _is_gzip_file(path: Path) -> bool:
+    with open(path, "rb") as f:
+        return f.read(2) == b"\x1f\x8b"
+
+
+def _read_csv_auto(path: Path) -> pd.DataFrame:
+    compression = "gzip" if _is_gzip_file(path) else None
+    return pd.read_csv(path, compression=compression)
+
+
+def _read_table_auto(path: Path) -> pd.DataFrame:
+    if path.suffix == ".parquet":
+        return pd.read_parquet(path)
+    return _read_csv_auto(path)
+
+
 def _snapshot_columns() -> list[str]:
     cols = ["exchange", "symbol", "timestamp", "local_timestamp"]
     for i in range(25):
@@ -28,7 +44,7 @@ def load_snapshot25_csv(
     symbol: Optional[str] = None,
 ) -> pd.DataFrame:
     path = Path(path)
-    df = pd.read_csv(path)
+    df = _read_table_auto(path)
 
     missing = [c for c in SNAPSHOT_COLUMNS if c not in df.columns]
     if missing:

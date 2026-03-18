@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 from collections import Counter
 from typing import Any, cast
 
@@ -9,6 +10,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
 from src.env.execution_env import ExecutionEnv
 from src.utils.io import load_yaml
+from src.utils.tardis_chunk import build_chunk_paths
 
 
 # Must match ExecutionEnv action ids exactly
@@ -23,40 +25,88 @@ ACTION_NAME = {
 
 def make_env(
     env_cfg: dict,
-    book_path: str,
-    trade_path: str,
-    snapshot_path: str | None,
+    chunk_paths: list[dict[str, str]],
 ):
     def _init():
         return ExecutionEnv(
             env_cfg=env_cfg,
-            book_path=book_path,
-            trade_path=trade_path,
-            snapshot_path=snapshot_path,
+            chunk_paths=chunk_paths,
         )
 
     return _init
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Evaluate PPO execution agent on chunk parquet data")
+    parser.add_argument("--symbol", required=True)
+    parser.add_argument("--side", required=True, choices=["buy", "sell"])
+    parser.add_argument("--chunk-index", type=int, default=0)
+    parser.add_argument("--train-config", default="configs/train_btc_long.yaml")
+    return parser.parse_args()
+
+
+def build_env_cfg(symbol: str, side: str) -> dict:
+    return {
+        "asset": {"symbol": symbol, "tick_size": 0.1, "lot_size": 0.001},
+        "backtest": {
+            "maker_fee": 0.0,
+            "taker_fee": 0.0002,
+            "entry_latency_ns": 1000000,
+            "response_latency_ns": 1000000,
+            "queue_model_power": 2.0,
+            "roi_lb": 10000,
+            "roi_ub": 200000,
+        },
+        "execution": {
+            "side": side,
+            "target_qty": 0.05,
+            "horizon_sec": 120,
+            "step_sec": 2,
+            "market_clip_qty": 0.005,
+            "max_active_orders": 1,
+            "start_idx": 2000,
+            "random_start": True,
+            "random_chunk": False,
+        },
+        "reward": {"lambda_terminal_remain": 3.0},
+    }
+
+
 def main() -> None:
-    env_cfg = load_yaml("configs/env.yaml")
-    side = str(env_cfg["execution"]["side"]).lower()
+    args = parse_args()
+    symbol = args.symbol.upper()
+    side = args.side.lower()
+    train_cfg = load_yaml(args.train_config)
 
-    book_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/incremental_book_L2/BTCUSDT_2025-12-05_2025-12-07.csv"
-    trade_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/trades/BTCUSDT_2025-12-05_2025-12-07.csv"
-    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/BTCUSDT_2025-12-05_2025-12-07.csv.gz"
+    chunk_paths_dc = build_chunk_paths(
+        symbol=symbol,
+        start_day=train_cfg["test_start_day"],
+        end_day=train_cfg["test_end_day"],
+        chunk_hours=int(train_cfg.get("chunk_hours", 6)),
+    )
+    chunk_paths = [
+        {
+            "chunk": x.chunk,
+            "book_path": x.book_path,
+            "trade_path": x.trade_path,
+            "snapshot_path": x.snapshot_path,
+        }
+        for x in chunk_paths_dc
+    ]
 
-    # 按需替换成 sell agent 的 checkpoint
-    vecnorm_path = "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints/vecnormalize_execution.pkl"
-    model_path = "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints/ppo_execution_agent_vecnorm_new.zip"
+    env_cfg = build_env_cfg(symbol=symbol, side=side)
+    env_cfg["execution"]["fixed_chunk_index"] = int(args.chunk_index)
+
+    run_name = f"{symbol.lower()}_{side}_1m"
+    ckpt_dir = f"/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints_{run_name}"
+    vecnorm_path = f"{ckpt_dir}/{run_name}_vecnormalize.pkl"
+    model_path = f"{ckpt_dir}/{run_name}.zip"
 
     base_env = DummyVecEnv(
         [
             make_env(
                 env_cfg=env_cfg,
-                book_path=book_path,
-                trade_path=trade_path,
-                snapshot_path=snapshot_path,
+                chunk_paths=chunk_paths,
             )
         ]
     )
@@ -77,10 +127,10 @@ def main() -> None:
     step_idx = 0
     final_info: dict[str, Any] | None = None
 
-    raw_env = cast(ExecutionEnv, env.venv.envs[0])
+    raw_env = cast(ExecutionEnv, base_env.envs[0])
 
     while not done:
-        state_before = raw_env.wrapper.get_market_state()
+        state_before = raw_env._require_wrapper().get_market_state()
 
         action, _ = model.predict(cast(Any, obs), deterministic=True)
         action = int(action[0]) if not isinstance(action, int) else int(action)
@@ -96,7 +146,7 @@ def main() -> None:
         final_info = step_info
         total_reward += reward_scalar
 
-        state_after = raw_env.wrapper.get_market_state()
+        state_after = raw_env._require_wrapper().get_market_state()
 
         filled_now = float(step_info["filled_now"])
         filled_qty = float(step_info["filled_qty"])

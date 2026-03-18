@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
 import pandas as pd
@@ -48,6 +49,7 @@ class TardisExecutionWrapper:
         self.trade_path = trade_path
         self.snapshot_path = snapshot_path
         self.symbol = symbol
+        self.data_format = "parquet" if Path(book_path).suffix == ".parquet" else "csv"
         self.maker_fee = maker_fee
         self.taker_fee = taker_fee
         self.tick_size = tick_size
