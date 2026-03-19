@@ -24,6 +24,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--start-day", required=True, help="Inclusive start day, YYYY-MM-DD")
     parser.add_argument("--end-day", required=True, help="Inclusive end day, YYYY-MM-DD")
     parser.add_argument("--chunk-hours", type=int, default=6, help="Chunk size in hours")
+    parser.add_argument("--raw-root", type=str, default=None, help="Override raw tardis root directory")
+    parser.add_argument("--chunk-root", type=str, default=None, help="Override output tardis chunk root directory")
     parser.add_argument("--force", action="store_true", help="Overwrite existing chunk parquet files")
     return parser.parse_args()
 
@@ -85,8 +87,14 @@ def main() -> None:
     if chunk_hours <= 0 or 24 % chunk_hours != 0:
         raise ValueError("chunk_hours must be a positive divisor of 24")
 
-    daily_paths = build_daily_paths(symbol=symbol, start_day=args.start_day, end_day=args.end_day)
-    symbol_root = CHUNK_ROOT / symbol
+    daily_paths = build_daily_paths(
+        symbol=symbol,
+        start_day=args.start_day,
+        end_day=args.end_day,
+        raw_root=args.raw_root,
+    )
+    chunk_root = Path(args.chunk_root) if args.chunk_root is not None else CHUNK_ROOT
+    symbol_root = chunk_root / symbol
 
     for daily in daily_paths:
         print(f"[load] {daily.day}")

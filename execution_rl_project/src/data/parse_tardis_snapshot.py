@@ -65,6 +65,13 @@ def load_snapshot25_csv(
     return df.reset_index(drop=True)
 
 
+def load_snapshot25_auto(
+    path: str | Path,
+    symbol: Optional[str] = None,
+) -> pd.DataFrame:
+    return load_snapshot25_csv(path=path, symbol=symbol)
+
+
 def snapshot_row_to_books(row: pd.Series) -> tuple[dict[float, float], dict[float, float]]:
     bids: dict[float, float] = {}
     asks: dict[float, float] = {}

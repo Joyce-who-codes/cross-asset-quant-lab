@@ -95,6 +95,8 @@ class ExecutionEnv(gym.Env):
 
         self.random_start = ex_cfg.get("random_start", False)
         self.fixed_start_idx = ex_cfg.get("start_idx", 2000)
+        self.min_start_idx = int(ex_cfg.get("min_start_idx", 2000))
+        self.tail_buffer_events = int(ex_cfg.get("tail_buffer_events", 5000))
         self.log_chunk_on_reset = bool(ex_cfg.get("log_chunk_on_reset", False))
 
         self.lambda_terminal_remain = float(rw_cfg["lambda_terminal_remain"])
@@ -188,14 +190,16 @@ class ExecutionEnv(gym.Env):
         self.current_chunk = chunk_cfg["chunk"]
 
     def _sample_start_idx(self) -> int:
-        if not self.random_start:
-            return self.fixed_start_idx
-
-        min_start = 2000
         wrapper = self._require_wrapper()
-        usable = max(min_start + 1, wrapper.num_events() - 5000)
+        max_valid_idx = max(0, wrapper.num_events() - 1)
 
-        return random.randint(min_start, usable - 1)
+        if not self.random_start:
+            return min(int(self.fixed_start_idx), max_valid_idx)
+
+        min_start = min(max(0, self.min_start_idx), max_valid_idx)
+        max_start = max(min_start, wrapper.num_events() - self.tail_buffer_events)
+
+        return random.randint(min_start, max_start)
 
     def _get_obs(self) -> np.ndarray:
         wrapper = self._require_wrapper()

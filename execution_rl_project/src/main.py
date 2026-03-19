@@ -8,6 +8,9 @@ import sys
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
+from src.utils.project_paths import PROJECT_ROOT
+from src.utils.tardis_chunk import build_chunk_paths
+
 
 def summarize(name: str, results: list[dict]) -> None:
     n = len(results)
@@ -100,7 +103,7 @@ def run_ppo_model(
 def main() -> None:
     print("[main] started")
 
-    project_root = Path(__file__).resolve().parents[2]
+    project_root = PROJECT_ROOT
     if str(project_root) not in sys.path:
         sys.path.insert(0, str(project_root))
 
@@ -112,28 +115,37 @@ def main() -> None:
 
     print("[main] imports loaded")
 
-    env_cfg_path = "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/configs/env.yaml"
+    env_cfg_path = project_root / "configs" / "env.yaml"
     env_cfg = load_yaml(str(env_cfg_path))
+    train_cfg = load_yaml(str(project_root / "configs" / "train_btc_long.yaml"))
     print("[main] env config loaded")
 
-    book_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/incremental_book_L2/BTCUSDT_2025-12-05_2025-12-07.csv"
-    trade_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/trades/BTCUSDT_2025-12-05_2025-12-07.csv"
-    snapshot_path = "/home/joyce/projects/data/raw/tardis/BTCUSDT/snapshot_25/BTCUSDT_2025-12-05_2025-12-07.csv.gz"
+    symbol = str(env_cfg["asset"]["symbol"]).upper()
+    chunk_paths = build_chunk_paths(
+        symbol=symbol,
+        start_day=train_cfg["test_start_day"],
+        end_day=train_cfg["test_end_day"],
+        chunk_hours=int(train_cfg.get("chunk_hours", 6)),
+    )
+    chunk_cfg = chunk_paths[0]
 
-    model_path = "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints/ppo_execution_agent_vecnorm_new.zip"
-    vecnorm_path = "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints/vecnormalize_execution.pkl"
+    run_name = f"{symbol.lower()}_{str(env_cfg['execution']['side']).lower()}_1m"
+    ckpt_dir = project_root / "results" / f"checkpoints_{run_name}"
+    model_path = str(ckpt_dir / f"{run_name}.zip")
+    vecnorm_path = str(ckpt_dir / f"{run_name}_vecnormalize.pkl")
 
-    print(f"[main] book_path={book_path}")
-    print(f"[main] trade_path={trade_path}")
-    print(f"[main] snapshot_path={snapshot_path}")
+    print(f"[main] chunk={chunk_cfg['chunk']}")
+    print(f"[main] book_path={chunk_cfg['book_path']}")
+    print(f"[main] trade_path={chunk_cfg['trade_path']}")
+    print(f"[main] snapshot_path={chunk_cfg['snapshot_path']}")
     print(f"[main] model_path={model_path}")
     print(f"[main] vecnorm_path={vecnorm_path}")
 
     env = ExecutionEnv(
         env_cfg=env_cfg,
-        book_path=book_path,
-        trade_path=trade_path,
-        snapshot_path=snapshot_path,
+        book_path=chunk_cfg["book_path"],
+        trade_path=chunk_cfg["trade_path"],
+        snapshot_path=chunk_cfg["snapshot_path"],
     )
     print("[main] ExecutionEnv initialized")
 
@@ -156,9 +168,9 @@ def main() -> None:
     print("[main] running trained PPO model")
     ppo_results = run_ppo_model(
         env_cfg=env_cfg,
-        book_path=book_path,
-        trade_path=trade_path,
-        snapshot_path=snapshot_path,
+        book_path=chunk_cfg["book_path"],
+        trade_path=chunk_cfg["trade_path"],
+        snapshot_path=chunk_cfg["snapshot_path"],
         model_path=model_path,
         vecnorm_path=vecnorm_path,
         start_indices=start_indices,

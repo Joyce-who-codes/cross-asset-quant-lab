@@ -7,8 +7,8 @@ from typing import Optional
 import pandas as pd
 
 from src.backtest.order_book_replay import OrderBookReplay
-from src.data.parse_tardis_csv import load_merged_events
-from src.data.parse_tardis_snapshot import load_snapshot25_csv
+from src.data.parse_tardis_csv import load_merged_events_auto
+from src.data.parse_tardis_snapshot import load_snapshot25_auto
 
 
 @dataclass
@@ -55,7 +55,7 @@ class TardisExecutionWrapper:
         self.tick_size = tick_size
         self.top_k = top_k
 
-        self.events: pd.DataFrame = load_merged_events(
+        self.events: pd.DataFrame = load_merged_events_auto(
             book_path=book_path,
             trade_path=trade_path,
             symbol=symbol,
@@ -63,7 +63,7 @@ class TardisExecutionWrapper:
         )
         self.snapshots: pd.DataFrame | None = None
         if snapshot_path is not None:
-            self.snapshots = load_snapshot25_csv(snapshot_path, symbol=symbol)
+            self.snapshots = load_snapshot25_auto(snapshot_path, symbol=symbol)
 
         self.replay = OrderBookReplay(
             tick_size=tick_size,

@@ -8,11 +8,9 @@ from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
 from src.env.execution_env import ExecutionEnv
 from src.utils.io import ensure_dir, load_yaml
+from src.utils.project_paths import PROJECT_ROOT
 from src.utils.seed import set_seed
 from src.utils.tardis_chunk import build_chunk_paths
-
-
-PROJECT_ROOT = Path("/home/joyce/projects/cross-asset-quant-lab/execution_rl_project")
 
 
 def build_env_cfg(symbol: str, side: str) -> dict:
@@ -100,6 +98,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--phase", type=str, choices=["phase1", "phase2", "both"], default="both")
     parser.add_argument("--split", type=str, choices=["train", "val", "test"], default="train")
     parser.add_argument("--train-config", type=str, default="configs/train_btc_long.yaml")
+    parser.add_argument("--chunk-root", type=str, default=None)
     return parser.parse_args()
 
 
@@ -111,7 +110,10 @@ def main() -> None:
     phase = args.phase
     split = args.split
 
-    train_cfg = load_yaml(args.train_config)
+    train_config_path = Path(args.train_config)
+    if not train_config_path.is_absolute():
+        train_config_path = PROJECT_ROOT / train_config_path
+    train_cfg = load_yaml(str(train_config_path))
     set_seed(train_cfg["seed"])
 
     split_windows = {
@@ -122,21 +124,13 @@ def main() -> None:
     start_day, end_day = split_windows[split]
     chunk_hours = int(train_cfg.get("chunk_hours", 6))
 
-    chunk_paths_dc = build_chunk_paths(
+    chunk_paths = build_chunk_paths(
         symbol=symbol,
         start_day=start_day,
         end_day=end_day,
         chunk_hours=chunk_hours,
+        chunk_root=args.chunk_root,
     )
-    chunk_paths = [
-        {
-            "chunk": x.chunk,
-            "book_path": x.book_path,
-            "trade_path": x.trade_path,
-            "snapshot_path": x.snapshot_path,
-        }
-        for x in chunk_paths_dc
-    ]
 
     run_name = f"{symbol.lower()}_{side}_1m"
     model_dir = ensure_dir(str(PROJECT_ROOT / "results" / f"checkpoints_{run_name}"))

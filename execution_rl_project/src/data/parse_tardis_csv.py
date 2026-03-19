@@ -256,3 +256,17 @@ def load_merged_events(
     book_df = load_incremental_book_csv(book_path, symbol=symbol)
     trades_df = load_trades_csv(trade_path, symbol=symbol)
     return merge_book_and_trades(book_df, trades_df, sort_by=sort_by)
+
+
+def load_merged_events_auto(
+    book_path: str | Path,
+    trade_path: str | Path,
+    symbol: str = "BTCUSDT",
+    sort_by: str = "exch_ts",
+) -> pd.DataFrame:
+    return load_merged_events(
+        book_path=book_path,
+        trade_path=trade_path,
+        symbol=symbol,
+        sort_by=sort_by,
+    )

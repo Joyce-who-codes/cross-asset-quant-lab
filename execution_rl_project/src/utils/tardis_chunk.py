@@ -1,21 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
 
+from src.utils.project_paths import resolve_data_root
 
-CHUNK_ROOT = Path("/home/joyce/projects/data/raw/tardis_chunks")
 
-
-@dataclass
-class ChunkPaths:
-    chunk: str
-    book_path: str
-    trade_path: str
-    snapshot_path: str
-    meta_path: str
+CHUNK_ROOT = resolve_data_root("TARDIS_CHUNK_ROOT", "tardis_chunks")
 
 
 def make_day_list(start_day: str, end_day: str) -> list[str]:
@@ -28,14 +20,16 @@ def build_chunk_paths(
     start_day: str,
     end_day: str,
     chunk_hours: int = 6,
-) -> list[ChunkPaths]:
+    chunk_root: str | Path | None = None,
+) -> list[dict[str, str]]:
     if chunk_hours <= 0 or 24 % chunk_hours != 0:
         raise ValueError("chunk_hours must be a positive divisor of 24")
 
     symbol = symbol.upper()
-    root = CHUNK_ROOT / symbol
+    root = Path(chunk_root) if chunk_root is not None else CHUNK_ROOT
+    root = root / symbol
 
-    out: list[ChunkPaths] = []
+    out: list[dict[str, str]] = []
     for day in make_day_list(start_day, end_day):
         for hour in range(0, 24, chunk_hours):
             chunk = f"{day}_{hour:02d}"
@@ -47,18 +41,18 @@ def build_chunk_paths(
 
             if book_path.exists() and trade_path.exists() and snapshot_path.exists() and meta_path.exists():
                 out.append(
-                    ChunkPaths(
-                        chunk=chunk,
-                        book_path=str(book_path),
-                        trade_path=str(trade_path),
-                        snapshot_path=str(snapshot_path),
-                        meta_path=str(meta_path),
-                    )
+                    {
+                        "chunk": chunk,
+                        "book_path": str(book_path),
+                        "trade_path": str(trade_path),
+                        "snapshot_path": str(snapshot_path),
+                        "meta_path": str(meta_path),
+                    }
                 )
 
     if not out:
         raise FileNotFoundError(
-            f"No chunk parquet files found for {symbol} in [{start_day}, {end_day}]"
+            f"No chunk parquet files found for {symbol} in [{start_day}, {end_day}] under {root}"
         )
 
     return out

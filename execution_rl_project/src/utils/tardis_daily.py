@@ -5,8 +5,10 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.utils.project_paths import resolve_data_root
 
-DATA_ROOT = Path("/home/joyce/projects/data/raw/tardis")
+
+DATA_ROOT = resolve_data_root("TARDIS_RAW_ROOT", "tardis")
 
 
 @dataclass
@@ -22,9 +24,15 @@ def make_day_list(start_day: str, end_day: str) -> list[str]:
     return [d.strftime("%Y-%m-%d") for d in dates]
 
 
-def build_daily_paths(symbol: str, start_day: str, end_day: str) -> list[DailyPaths]:
+def build_daily_paths(
+    symbol: str,
+    start_day: str,
+    end_day: str,
+    raw_root: str | Path | None = None,
+) -> list[DailyPaths]:
     symbol = symbol.upper()
-    root = DATA_ROOT / symbol
+    root = Path(raw_root) if raw_root is not None else DATA_ROOT
+    root = root / symbol
 
     out: list[DailyPaths] = []
     for day in make_day_list(start_day, end_day):
@@ -57,7 +65,7 @@ def build_daily_paths(symbol: str, start_day: str, end_day: str) -> list[DailyPa
 
     if not out:
         raise FileNotFoundError(
-            f"No daily Tardis files found for {symbol} in [{start_day}, {end_day}]"
+            f"No daily Tardis files found for {symbol} in [{start_day}, {end_day}] under {root}"
         )
 
     return out

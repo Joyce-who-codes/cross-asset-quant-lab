@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from pathlib import Path
 from typing import Any, cast
 
 import numpy as np
@@ -10,6 +11,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
 from src.env.execution_env import ExecutionEnv
 from src.utils.io import load_yaml
+from src.utils.project_paths import PROJECT_ROOT
 from src.utils.tardis_chunk import build_chunk_paths
 
 
@@ -42,6 +44,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--side", required=True, choices=["buy", "sell"])
     parser.add_argument("--chunk-index", type=int, default=0)
     parser.add_argument("--train-config", default="configs/train_btc_long.yaml")
+    parser.add_argument("--chunk-root", type=str, default=None)
     return parser.parse_args()
 
 
@@ -76,31 +79,26 @@ def main() -> None:
     args = parse_args()
     symbol = args.symbol.upper()
     side = args.side.lower()
-    train_cfg = load_yaml(args.train_config)
+    train_config_path = Path(args.train_config)
+    if not train_config_path.is_absolute():
+        train_config_path = PROJECT_ROOT / train_config_path
+    train_cfg = load_yaml(str(train_config_path))
 
-    chunk_paths_dc = build_chunk_paths(
+    chunk_paths = build_chunk_paths(
         symbol=symbol,
         start_day=train_cfg["test_start_day"],
         end_day=train_cfg["test_end_day"],
         chunk_hours=int(train_cfg.get("chunk_hours", 6)),
+        chunk_root=args.chunk_root,
     )
-    chunk_paths = [
-        {
-            "chunk": x.chunk,
-            "book_path": x.book_path,
-            "trade_path": x.trade_path,
-            "snapshot_path": x.snapshot_path,
-        }
-        for x in chunk_paths_dc
-    ]
 
     env_cfg = build_env_cfg(symbol=symbol, side=side)
     env_cfg["execution"]["fixed_chunk_index"] = int(args.chunk_index)
 
     run_name = f"{symbol.lower()}_{side}_1m"
-    ckpt_dir = f"/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints_{run_name}"
-    vecnorm_path = f"{ckpt_dir}/{run_name}_vecnormalize.pkl"
-    model_path = f"{ckpt_dir}/{run_name}.zip"
+    ckpt_dir = PROJECT_ROOT / "results" / f"checkpoints_{run_name}"
+    vecnorm_path = str(ckpt_dir / f"{run_name}_vecnormalize.pkl")
+    model_path = str(ckpt_dir / f"{run_name}.zip")
 
     base_env = DummyVecEnv(
         [
