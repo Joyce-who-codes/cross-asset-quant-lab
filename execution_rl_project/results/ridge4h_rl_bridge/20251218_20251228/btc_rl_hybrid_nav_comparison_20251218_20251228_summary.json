@@ -1,0 +1,13 @@
+{
+  "baseline_path": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_cumret_4h_20251218_20251228.csv",
+  "rl_replay_path": "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/ridge4h_rl_bridge/20251218_20251228/btc_ridge4h_rl_replay_20251218_20251228.csv",
+  "timeline_csv": "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/ridge4h_rl_bridge/20251218_20251228/btc_rl_hybrid_nav_comparison_20251218_20251228.csv",
+  "trade_adjustment_csv": "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/ridge4h_rl_bridge/20251218_20251228/btc_rl_trade_adjustments_20251218_20251228.csv",
+  "plot_path": "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/ridge4h_rl_bridge/20251218_20251228/btc_rl_hybrid_nav_comparison_20251218_20251228.png",
+  "initial_nav": 1000000.0,
+  "baseline_final_nav": 1142578.768951469,
+  "hybrid_final_nav": 1163768.6357068517,
+  "final_nav_diff": 21189.866755382624,
+  "total_execution_adjustment": 21189.866755382624,
+  "num_btc_rl_trades": 12
+}

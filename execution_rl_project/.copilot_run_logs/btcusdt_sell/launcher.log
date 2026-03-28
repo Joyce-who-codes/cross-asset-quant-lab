@@ -1,0 +1,6 @@
+nohup: ignoring input
+2026-03-23T12:31:06+08:00 | START sell pipeline
+2026-03-23T12:31:06+08:00 | TARDIS_RAW_ROOT=/home/joyce/projects/data/raw/tardis
+2026-03-23T12:31:06+08:00 | TARDIS_CHUNK_ROOT=/home/joyce/projects/data/raw/tardis_chunks
+2026-03-23T12:31:06+08:00 | STEP 3 train PPO both phases (sell)
+Terminated

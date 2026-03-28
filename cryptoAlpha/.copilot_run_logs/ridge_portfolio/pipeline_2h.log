@@ -1,0 +1,17 @@
+PROJECT_ROOT = /home/joyce/projects/cross-asset-quant-lab/cryptoAlpha
+panel_fp = /home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/cache/panel_top20_1h_2025_20260311.parquet
+output_label = 2h
+[1/6] computing factors
+/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/src/factors/factor_utils.py:32: FutureWarning: The default fill_method='ffill' in SeriesGroupBy.pct_change is deprecated and will be removed in a future version. Either fill in any non-leading NA values prior to calling pct_change or specify 'fill_method=None' to not fill NA values.
+  return df.groupby("symbol")[col].pct_change(periods)
+[2/6] training ridge alpha and saving daily models
+[3/6] running backtest
+/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/src/portfolio/portfolio_backtest.py:147: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  out = df.groupby("datetime", group_keys=False).apply(_assign)
+[4/6] building BTC execution target table
+[5/6] collecting execution reference tables
+[6/6] saving pipeline metadata
+done
+saved predictions to: /home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/predictions_2h/pred_df_top20_1h_2h_20251218_20251228_ridge.parquet
+saved backtest summary to: /home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_2h/ridge_portfolio_summary_2h_20251218_20251228.csv
+saved execution table to: /home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/execution_2h/btc_execution_targets_2h_20251218_20251228.csv

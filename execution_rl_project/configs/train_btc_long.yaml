@@ -1,7 +1,9 @@
 seed: 132
 
-total_timesteps: 5000000
 phase1_timesteps: 30000
+phase2a_chunk_count: 4
+phase2a_episodes_per_chunk: 20
+phase2b_episodes_per_chunk: 20
 chunk_hours: 6
 train_start_day: 2025-12-01
 train_end_day: 2025-12-20
@@ -11,10 +13,10 @@ test_start_day: 2025-12-26
 test_end_day: 2026-01-01
 
 learning_rate: 0.0003
-n_steps: 2048
-batch_size: 256
+n_steps: 512
+batch_size: 128
 gamma: 0.99
 gae_lambda: 0.95
 clip_range: 0.2
-ent_coef: 0.01
+ent_coef: 0.02
 device: cpu

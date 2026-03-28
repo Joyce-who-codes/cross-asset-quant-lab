@@ -1,0 +1,38 @@
+=== Evaluation Setup ===
+symbol: BTCUSDT
+side: sell
+chunk_index: 7
+chunk: 2025-12-27_18
+episodes: 20
+seed: 42
+model_path: /home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints_btcusdt_sell_1m/btcusdt_sell_1m.zip
+vecnorm_path: /home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints_btcusdt_sell_1m/btcusdt_sell_1m_vecnormalize.pkl
+
+TWAP Market:
+  episodes=20
+  avg_reward=0.145500 | std_reward=5.333106
+  avg_filled=0.050000 | std_filled=0.000000
+  avg_remaining=0.000000 | std_remaining=0.000000
+  avg_equity=-0.850021 | std_equity=0.335486
+
+Passive Best Bid:
+  episodes=20
+  avg_reward=-2.802750 | std_reward=0.175510
+  avg_filled=0.003500 | std_filled=0.002291
+  avg_remaining=0.046500 | std_remaining=0.002291
+  avg_equity=-0.011075 | std_equity=0.104483
+
+Passive Then Sweep:
+  episodes=20
+  avg_reward=0.723000 | std_reward=23.823095
+  avg_filled=0.050000 | std_filled=0.000000
+  avg_remaining=0.000000 | std_remaining=0.000000
+  avg_equity=-0.721492 | std_equity=0.295280
+
+PPO Trained Model:
+  episodes=20
+  avg_reward=0.179500 | std_reward=5.336405
+  avg_filled=0.050000 | std_filled=0.000000
+  avg_remaining=0.000000 | std_remaining=0.000000
+  avg_equity=-0.890821 | std_equity=0.434202
+

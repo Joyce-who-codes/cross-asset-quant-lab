@@ -9,7 +9,7 @@ import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
-from src.agents.evaluate import ACTION_NAME, build_env_cfg, make_env
+from src.agents.evaluate import ACTION_NAME, build_env_cfg
 from src.env.execution_env import ExecutionEnv
 from src.utils.io import load_yaml
 from src.utils.project_paths import PROJECT_ROOT
@@ -31,13 +31,20 @@ def run_single_chunk(
     chunk_cfg: dict[str, str],
     model_path: str,
     vecnorm_path: str,
+    train_cfg: dict,
 ) -> dict[str, Any]:
-    env_cfg = build_env_cfg(symbol=symbol, side=side)
+    env_cfg = build_env_cfg(symbol=symbol, side=side, train_cfg=train_cfg)
     env_cfg["execution"]["random_start"] = True
     env_cfg["execution"]["random_chunk"] = False
     env_cfg["execution"]["fixed_chunk_index"] = 0
 
-    base_env = DummyVecEnv([make_env(env_cfg=env_cfg, chunk_paths=[chunk_cfg])])
+    def make_env():
+        return ExecutionEnv(
+            env_cfg=env_cfg,
+            chunk_paths=[chunk_cfg],
+        )
+
+    base_env = DummyVecEnv([make_env])
     env = VecNormalize.load(vecnorm_path, base_env)
     env.training = False
     env.norm_reward = False
@@ -92,7 +99,8 @@ def main() -> None:
         chunk_root=args.chunk_root,
     )
 
-    run_name = f"{symbol.lower()}_{side}_1m"
+    run_name_suffix = str(train_cfg.get("run_name_suffix", ""))
+    run_name = f"{symbol.lower()}_{side}_1m{run_name_suffix}"
     ckpt_dir = PROJECT_ROOT / "results" / f"checkpoints_{run_name}"
     vecnorm_path = str(ckpt_dir / f"{run_name}_vecnormalize.pkl")
     model_path = str(ckpt_dir / f"{run_name}.zip")
@@ -104,6 +112,7 @@ def main() -> None:
             chunk_cfg=chunk_cfg,
             model_path=model_path,
             vecnorm_path=vecnorm_path,
+            train_cfg=train_cfg,
         )
         for chunk_cfg in chunk_paths
     ]

@@ -1,0 +1,100 @@
+[load] 2025-12-01
+[skip] chunk exists: 2025-12-01_00
+[skip] chunk exists: 2025-12-01_06
+[skip] chunk exists: 2025-12-01_12
+[skip] chunk exists: 2025-12-01_18
+[load] 2025-12-02
+[skip] chunk exists: 2025-12-02_00
+[skip] chunk exists: 2025-12-02_06
+[skip] chunk exists: 2025-12-02_12
+[skip] chunk exists: 2025-12-02_18
+[load] 2025-12-03
+[write] 2025-12-03_00 | book=40084557 trade=1428780 snapshot=364455
+[write] 2025-12-03_06 | book=35459919 trade=1045648 snapshot=370160
+[write] 2025-12-03_12 | book=52173170 trade=1964974 snapshot=369890
+[write] 2025-12-03_18 | book=35025129 trade=995497 snapshot=338558
+[load] 2025-12-04
+[write] 2025-12-04_00 | book=31024055 trade=890566 snapshot=334246
+[write] 2025-12-04_06 | book=26975922 trade=650456 snapshot=324814
+[write] 2025-12-04_12 | book=44646286 trade=1542519 snapshot=371948
+[write] 2025-12-04_18 | book=34695193 trade=1080361 snapshot=336085
+[load] 2025-12-05
+[write] 2025-12-05_00 | book=23051073 trade=574209 snapshot=317461
+[write] 2025-12-05_06 | book=25942185 trade=730149 snapshot=335950
+[write] 2025-12-05_12 | book=56892300 trade=2352689 snapshot=385112
+[write] 2025-12-05_18 | book=32420902 trade=858219 snapshot=336149
+[load] 2025-12-06
+[write] 2025-12-06_00 | book=19517762 trade=410248 snapshot=292662
+[write] 2025-12-06_06 | book=19077615 trade=330358 snapshot=288794
+[write] 2025-12-06_12 | book=21773358 trade=471396 snapshot=294867
+[write] 2025-12-06_18 | book=20016991 trade=379696 snapshot=269724
+[load] 2025-12-07
+[write] 2025-12-07_00 | book=18015240 trade=285170 snapshot=292834
+[write] 2025-12-07_06 | book=18759645 trade=335369 snapshot=304489
+[write] 2025-12-07_12 | book=40237108 trade=1543121 snapshot=357776
+[write] 2025-12-07_18 | book=34411380 trade=1175198 snapshot=353906
+[load] 2025-12-08
+[write] 2025-12-08_00 | book=28991586 trade=826549 snapshot=336874
+[write] 2025-12-08_06 | book=23316686 trade=610727 snapshot=328579
+[write] 2025-12-08_12 | book=44826701 trade=1763263 snapshot=373114
+[write] 2025-12-08_18 | book=33651163 trade=853174 snapshot=330617
+[load] 2025-12-09
+[write] 2025-12-09_00 | book=26429310 trade=736544 snapshot=320927
+[write] 2025-12-09_06 | book=22571940 trade=520291 snapshot=312290
+[write] 2025-12-09_12 | book=50024453 trade=2189076 snapshot=376728
+[write] 2025-12-09_18 | book=32849603 trade=1033645 snapshot=347288
+[load] 2025-12-10
+[write] 2025-12-10_00 | book=22279842 trade=578011 snapshot=312682
+[write] 2025-12-10_06 | book=24565510 trade=683830 snapshot=336100
+[write] 2025-12-10_12 | book=35451418 trade=1015090 snapshot=360153
+[write] 2025-12-10_18 | book=48562007 trade=1954954 snapshot=368890
+[load] 2025-12-11
+[write] 2025-12-11_00 | book=36132967 trade=1338252 snapshot=366140
+[write] 2025-12-11_06 | book=20775587 trade=503756 snapshot=316864
+[write] 2025-12-11_12 | book=38780884 trade=1375506 snapshot=360970
+[write] 2025-12-11_18 | book=39865031 trade=1587807 snapshot=366711
+[load] 2025-12-12
+[write] 2025-12-12_00 | book=24386417 trade=707665 snapshot=346170
+[write] 2025-12-12_06 | book=19136913 trade=405037 snapshot=333367
+[write] 2025-12-12_12 | book=45181519 trade=1940854 snapshot=376932
+[write] 2025-12-12_18 | book=25760813 trade=702774 snapshot=338026
+[load] 2025-12-13
+[write] 2025-12-13_00 | book=12850446 trade=172159 snapshot=292798
+[write] 2025-12-13_06 | book=14348266 trade=222893 snapshot=337196
+[write] 2025-12-13_12 | book=16056350 trade=315684 snapshot=343229
+[write] 2025-12-13_18 | book=14163277 trade=221987 snapshot=268920
+[load] 2025-12-14
+[write] 2025-12-14_00 | book=13462283 trade=221867 snapshot=260493
+[write] 2025-12-14_06 | book=18675997 trade=542927 snapshot=288475
+[write] 2025-12-14_12 | book=27223120 trade=770982 snapshot=327395
+[write] 2025-12-14_18 | book=26593583 trade=793049 snapshot=308637
+[load] 2025-12-15
+[write] 2025-12-15_00 | book=28264051 trade=892641 snapshot=327995
+[write] 2025-12-15_06 | book=19712566 trade=456852 snapshot=302202
+[write] 2025-12-15_12 | book=51435008 trade=2401644 snapshot=373984
+[write] 2025-12-15_18 | book=35788166 trade=1183068 snapshot=340164
+[load] 2025-12-16
+[write] 2025-12-16_00 | book=27592436 trade=754917 snapshot=319154
+[write] 2025-12-16_06 | book=24523717 trade=750363 snapshot=319178
+[write] 2025-12-16_12 | book=51440728 trade=2071596 snapshot=376090
+[write] 2025-12-16_18 | book=25618696 trade=650556 snapshot=309776
+[load] 2025-12-17
+[write] 2025-12-17_00 | book=23817857 trade=673402 snapshot=315108
+[write] 2025-12-17_06 | book=24686764 trade=664960 snapshot=316837
+[write] 2025-12-17_12 | book=60053989 trade=3287493 snapshot=376544
+[write] 2025-12-17_18 | book=33594637 trade=1156076 snapshot=334417
+[load] 2025-12-18
+[write] 2025-12-18_00 | book=25363168 trade=678023 snapshot=334722
+[write] 2025-12-18_06 | book=22941484 trade=551750 snapshot=345633
+[write] 2025-12-18_12 | book=61110069 trade=3170090 snapshot=394219
+[write] 2025-12-18_18 | book=42840370 trade=1686938 snapshot=360945
+[load] 2025-12-19
+[write] 2025-12-19_00 | book=33352686 trade=1215966 snapshot=337427
+[write] 2025-12-19_06 | book=27628051 trade=878621 snapshot=329961
+[write] 2025-12-19_12 | book=47982057 trade=2121291 snapshot=368333
+[write] 2025-12-19_18 | book=28413574 trade=817906 snapshot=312391
+[load] 2025-12-20
+[write] 2025-12-20_00 | book=15737511 trade=267290 snapshot=285749
+[write] 2025-12-20_06 | book=14828563 trade=208127 snapshot=275150
+[write] 2025-12-20_12 | book=15789587 trade=297426 snapshot=272825
+[write] 2025-12-20_18 | book=13320434 trade=151024 snapshot=279660

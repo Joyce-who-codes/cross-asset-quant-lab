@@ -12,7 +12,14 @@ from src.features.lob_features import (
     build_execution_state_features,
     compute_lob_state_features,
 )
-from src.env.reward import compute_step_reward, compute_terminal_penalty
+from src.env.reward import (
+    compute_step_reward as compute_shortfall_reward,
+    compute_terminal_penalty as compute_shortfall_terminal_penalty,
+)
+from src.env.reward_twap_relative import (
+    compute_step_reward as compute_twap_relative_reward,
+    compute_terminal_reward as compute_twap_relative_terminal_reward,
+)
 
 
 # ============================================================
@@ -98,12 +105,27 @@ class ExecutionEnv(gym.Env):
         self.min_start_idx = int(ex_cfg.get("min_start_idx", 2000))
         self.tail_buffer_events = int(ex_cfg.get("tail_buffer_events", 5000))
         self.log_chunk_on_reset = bool(ex_cfg.get("log_chunk_on_reset", False))
+        self.episodes_per_chunk = int(ex_cfg.get("episodes_per_chunk", 1))
+        self.episodes_on_current_chunk = 0
 
         self.lambda_terminal_remain = float(rw_cfg["lambda_terminal_remain"])
+        self.reward_mode = str(rw_cfg.get("mode", "shortfall")).lower()
+        self.lambda_lag = float(rw_cfg.get("lambda_lag", 0.0))
+        self.lambda_taker = float(rw_cfg.get("lambda_taker", 0.0))
+        self.lambda_excess = float(rw_cfg.get("lambda_excess", 0.0))
+
+        self.agent_cum_qty = 0.0
+        self.agent_total_cost = 0.0
+        self.benchmark_cum_qty = 0.0
+        self.benchmark_total_cost = 0.0
 
         self.max_steps = int(self.horizon_sec / self.step_sec)
         self.current_step = 0
         self.filled_qty = 0.0
+        self.agent_cum_qty = 0.0
+        self.agent_total_cost = 0.0
+        self.benchmark_cum_qty = 0.0
+        self.benchmark_total_cost = 0.0
         self.arrival_price = 0.0
 
         obs_dim = 6 + 2
@@ -230,11 +252,24 @@ class ExecutionEnv(gym.Env):
         super().reset(seed=seed)
 
         if self.chunk_paths is not None:
-            chunk_cfg = self._select_chunk_config()
-            if self.wrapper is None or self.current_chunk != chunk_cfg["chunk"]:
+            need_new_chunk = (
+                self.wrapper is None
+                or self.current_chunk is None
+                or self.episodes_on_current_chunk >= self.episodes_per_chunk
+            )
+
+            if need_new_chunk:
+                chunk_cfg = self._select_chunk_config()
                 self._rebuild_wrapper_for_chunk(chunk_cfg)
-            if self.log_chunk_on_reset:
-                print(f"[reset] selected chunk={chunk_cfg['chunk']}")
+                self.episodes_on_current_chunk = 0
+
+                if self.log_chunk_on_reset:
+                    print(f"[reset] NEW chunk={chunk_cfg['chunk']}")
+            else:
+                if self.log_chunk_on_reset:
+                    print(f"[reset] reuse chunk={self.current_chunk}")
+
+            self.episodes_on_current_chunk += 1
 
         wrapper = self._require_wrapper()
 
@@ -271,6 +306,7 @@ class ExecutionEnv(gym.Env):
 
         filled_now = 0.0
         avg_fill_price = 0.0
+        taker_fill_qty = 0.0
 
         prev_pos = float(wrapper.get_position())
         remaining_qty = max(0.0, self.target_qty - self.filled_qty)
@@ -304,6 +340,7 @@ class ExecutionEnv(gym.Env):
 
             filled_now = float(fill.filled_qty)
             avg_fill_price = float(fill.avg_fill_price)
+            taker_fill_qty = filled_now
 
         elif action == CANCEL_ALL:
             wrapper.cancel_all()
@@ -331,26 +368,81 @@ class ExecutionEnv(gym.Env):
         else:
             self.filled_qty = float(-new_pos)
 
+        self.agent_cum_qty = self.filled_qty
+        if filled_now > 1e-12:
+            self.agent_total_cost += avg_fill_price * filled_now
+
+        benchmark_target_cum_qty = min(
+            self.target_qty,
+            self.target_qty * self.current_step / max(self.max_steps, 1),
+        )
+        benchmark_step_qty = max(0.0, benchmark_target_cum_qty - self.benchmark_cum_qty)
+        benchmark_price = best_ask if self.side == "buy" else best_bid
+        if benchmark_step_qty > 1e-12:
+            self.benchmark_cum_qty += benchmark_step_qty
+            self.benchmark_total_cost += benchmark_price * benchmark_step_qty
+
         remaining_qty = max(0.0, self.target_qty - self.filled_qty)
 
-        reward, reward_parts = compute_step_reward(
-            arrival_price=self.arrival_price,
-            filled_qty=filled_now,
-            avg_fill_price=avg_fill_price,
-            target_qty=self.target_qty,
-            side=self.side,
-        )
+        if self.reward_mode == "twap_relative":
+            reward, reward_parts = compute_twap_relative_reward(
+                arrival_price=self.arrival_price,
+                filled_qty=filled_now,
+                avg_fill_price=avg_fill_price,
+                target_qty=self.target_qty,
+                side=self.side,
+                agent_cum_qty=self.agent_cum_qty,
+                benchmark_cum_qty=self.benchmark_cum_qty,
+                taker_fill_qty=taker_fill_qty,
+                lambda_lag=self.lambda_lag,
+                lambda_taker=self.lambda_taker,
+            )
+        else:
+            reward, reward_parts = compute_shortfall_reward(
+                arrival_price=self.arrival_price,
+                filled_qty=filled_now,
+                avg_fill_price=avg_fill_price,
+                target_qty=self.target_qty,
+                side=self.side,
+            )
+            reward_parts["lag_qty"] = 0.0
+            reward_parts["lag_penalty"] = 0.0
+            reward_parts["taker_fill_qty"] = float(taker_fill_qty)
+            reward_parts["taker_penalty"] = 0.0
+            reward_parts["reward"] = float(reward)
 
         terminated = remaining_qty <= 1e-12
         truncated = self.current_step >= self.max_steps or wrapper.is_done()
 
         terminal_penalty = 0.0
-        if truncated and not terminated:
-            terminal_penalty = compute_terminal_penalty(
-                remaining_qty=remaining_qty,
-                target_qty=self.target_qty,
-                lambda_terminal_remain=self.lambda_terminal_remain,
-            )
+        terminal_parts = {
+            "remaining_qty": float(remaining_qty),
+            "remaining_ratio": float(max(0.0, remaining_qty) / max(self.target_qty, 1e-12)),
+            "remain_penalty": 0.0,
+            "agent_total_cost": float(self.agent_total_cost),
+            "benchmark_total_cost": float(self.benchmark_total_cost),
+            "excess_cost": 0.0,
+            "excess_reward": 0.0,
+            "reward": 0.0,
+        }
+        if terminated or truncated:
+            if self.reward_mode == "twap_relative":
+                terminal_penalty, terminal_parts = compute_twap_relative_terminal_reward(
+                    remaining_qty=remaining_qty,
+                    target_qty=self.target_qty,
+                    agent_total_cost=self.agent_total_cost,
+                    benchmark_total_cost=self.benchmark_total_cost,
+                    lambda_terminal_remain=self.lambda_terminal_remain,
+                    lambda_excess=self.lambda_excess,
+                )
+            else:
+                terminal_penalty = compute_shortfall_terminal_penalty(
+                    remaining_qty=remaining_qty,
+                    target_qty=self.target_qty,
+                    lambda_terminal_remain=self.lambda_terminal_remain,
+                )
+                terminal_parts["remain_penalty"] = float(terminal_penalty)
+                terminal_parts["reward"] = float(terminal_penalty)
             reward += terminal_penalty
 
         obs = self._get_obs()
@@ -365,8 +457,20 @@ class ExecutionEnv(gym.Env):
             "position": float(wrapper.get_position()),
             "shortfall": float(reward_parts["shortfall"]),
             "shortfall_reward": float(reward_parts["shortfall_reward"]),
-            "exec_reward": float(reward_parts["shortfall_reward"]),
+            "lag_qty": float(reward_parts["lag_qty"]),
+            "lag_penalty": float(reward_parts["lag_penalty"]),
+            "taker_fill_qty": float(reward_parts["taker_fill_qty"]),
+            "taker_penalty": float(reward_parts["taker_penalty"]),
+            "agent_cum_qty": float(self.agent_cum_qty),
+            "benchmark_cum_qty": float(self.benchmark_cum_qty),
+            "agent_total_cost": float(self.agent_total_cost),
+            "benchmark_total_cost": float(self.benchmark_total_cost),
+            "excess_cost": float(terminal_parts["excess_cost"]),
+            "excess_reward": float(terminal_parts["excess_reward"]),
+            "exec_reward": float(reward_parts["reward"]),
             "terminal_penalty": float(terminal_penalty),
+            "terminal_reward": float(terminal_parts["reward"]),
+            "reward_mode": self.reward_mode,
             "chunk": self.current_chunk,
         }
 

@@ -1,0 +1,9 @@
+factor_name,source,dependency_columns
+mom_24h,Coinglass,close
+mom_6h,Coinglass,close
+funding_z_24,Coinglass,funding_close
+oi_change_24h,Coinglass,oi_close
+taker_imbalance,Coinglass,taker_buy_volume_usd | taker_sell_volume_usd
+long_short_ratio_z_24,Coinglass,global_account_long_short_ratio
+volume_ratio_24,Coinglass,volume_usd
+active_community_count_z_24,Cryptoracle,active_community_count

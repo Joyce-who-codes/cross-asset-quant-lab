@@ -1,0 +1,2 @@
+factor_name,horizon,n_obs,coverage_mean,ic_mean,ic_std,ic_ir,rank_ic_mean,rank_ic_std,rank_ic_ir,factor_autocorr_mean,top_bottom_mean_ret,top_bottom_std_ret,top_bottom_sharpe_naive,avg_group_turnover
+trend_strength_12_48,1,197467,1.0,-0.01728889663986009,0.3705100277349045,-0.04666242569872745,-0.0230828082584137,0.3261109532692285,-0.07078206980458693,0.9954110674228139,-9.953180798702351e-05,0.005072966440133587,-0.01962004068861581,0.17783478133362662

@@ -1,0 +1,32 @@
+{
+  "panel_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/cache/panel_top20_1h_2025_20260311.parquet",
+  "output_dir": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/evaluation/single_factor_all_4h",
+  "horizon": 4,
+  "group_num": 5,
+  "price_col": "close",
+  "n_factors": 20,
+  "factor_names": [
+    "active_community_count_z_24",
+    "amihud_illiquidity_24",
+    "atr_like_14",
+    "close_to_high_24",
+    "ema_ratio_24",
+    "funding_z_24",
+    "long_short_ratio_z_24",
+    "ma_gap_24_72",
+    "mom_24h",
+    "mom_6h",
+    "oi_change_24h",
+    "oi_volume_ratio",
+    "price_range",
+    "realized_vol_24",
+    "taker_imbalance",
+    "trend_strength_12_48",
+    "turnover_volatility_24",
+    "volatility_ratio_6_24",
+    "volume_momentum_6_24",
+    "volume_ratio_24"
+  ],
+  "n_success": 20,
+  "n_failures": 0
+}

@@ -1,0 +1,7 @@
+nohup: ignoring input
+2026-03-25T23:46:53+08:00 | START ridge portfolio pipeline
+2026-03-25T23:46:53+08:00 | REPO_ROOT=/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha
+2026-03-25T23:46:53+08:00 | PYTHON_BIN=/home/joyce/.venv/bin/python
+2026-03-25T23:46:53+08:00 | STEP 1 run Ridge alpha train/save/backtest pipeline
+2026-03-25T23:48:09+08:00 | STEP 1 done
+2026-03-25T23:48:09+08:00 | FINISH ridge portfolio pipeline

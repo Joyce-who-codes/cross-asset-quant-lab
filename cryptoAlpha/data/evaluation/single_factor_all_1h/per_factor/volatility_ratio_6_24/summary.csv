@@ -1,0 +1,2 @@
+factor_name,horizon,n_obs,coverage_mean,ic_mean,ic_std,ic_ir,rank_ic_mean,rank_ic_std,rank_ic_ir,factor_autocorr_mean,top_bottom_mean_ret,top_bottom_std_ret,top_bottom_sharpe_naive,avg_group_turnover
+volatility_ratio_6_24,1,197676,1.0,-0.0014796497196270292,0.29559216288348583,-0.00500571363323073,-0.001748256187982199,0.268462689369296,-0.006512101149261728,0.7945534598836101,8.459900933822833e-05,0.004148431514323978,0.020393010955038374,0.5866702370653155

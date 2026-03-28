@@ -1,0 +1,2 @@
+factor_name,horizon,n_obs,coverage_mean,ic_mean,ic_std,ic_ir,rank_ic_mean,rank_ic_std,rank_ic_ir,factor_autocorr_mean,top_bottom_mean_ret,top_bottom_std_ret,top_bottom_sharpe_naive,avg_group_turnover
+ema_ratio_24,1,197695,1.0,-0.026392173214950722,0.3737264833902432,-0.07061895366757173,-0.03253832911736175,0.3247608296105943,-0.10019166768442107,0.9041304906772248,-3.854324870896049e-05,0.0051923583412653495,-0.00742307178516971,0.5238809249189873

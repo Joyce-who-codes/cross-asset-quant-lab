@@ -1,0 +1,2 @@
+factor_name,horizon,n_obs,coverage_mean,ic_mean,ic_std,ic_ir,rank_ic_mean,rank_ic_std,rank_ic_ir,factor_autocorr_mean,top_bottom_mean_ret,top_bottom_std_ret,top_bottom_sharpe_naive,avg_group_turnover
+amihud_illiquidity_24,4,197619,1.0,-0.01759452896891367,0.28000681194661836,-0.06283607476022808,-0.01911599059472097,0.3203442510241717,-0.05967327502693,0.9992918635660478,-0.0002245206551054031,0.008292207890033793,-0.02707610060622974,0.04499038461538461

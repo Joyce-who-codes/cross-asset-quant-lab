@@ -1,0 +1,33 @@
+{
+  "n_rows": 197923,
+  "n_columns": 27,
+  "n_symbols": 19,
+  "symbols": [
+    "ADAUSDT",
+    "APTUSDT",
+    "ATOMUSDT",
+    "AVAXUSDT",
+    "BCHUSDT",
+    "BNBUSDT",
+    "BTCUSDT",
+    "DOGEUSDT",
+    "DOTUSDT",
+    "ETCUSDT",
+    "ETHUSDT",
+    "FILUSDT",
+    "LINKUSDT",
+    "LTCUSDT",
+    "NEARUSDT",
+    "SOLUSDT",
+    "TRXUSDT",
+    "XLMUSDT",
+    "XRPUSDT"
+  ],
+  "start_datetime": "2025-01-01 00:00:00",
+  "end_datetime": "2026-03-11 00:00:00",
+  "n_unique_datetimes": 10417,
+  "inferred_frequency": "0 days 01:00:00",
+  "avg_symbols_per_timestamp": 19.0,
+  "min_symbols_per_timestamp": 19,
+  "max_symbols_per_timestamp": 19
+}

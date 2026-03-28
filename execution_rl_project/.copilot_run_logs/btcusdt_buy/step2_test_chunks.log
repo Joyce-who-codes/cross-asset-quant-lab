@@ -1,0 +1,35 @@
+[load] 2025-12-26
+[write] 2025-12-26_00 | book=29842717 trade=1200852 snapshot=324311
+[write] 2025-12-26_06 | book=22749311 trade=583637 snapshot=305674
+[write] 2025-12-26_12 | book=36165681 trade=1460078 snapshot=340182
+[write] 2025-12-26_18 | book=18953843 trade=362395 snapshot=280721
+[load] 2025-12-27
+[write] 2025-12-27_00 | book=12725982 trade=153550 snapshot=278075
+[write] 2025-12-27_06 | book=14327148 trade=197718 snapshot=303892
+[write] 2025-12-27_12 | book=13251031 trade=154915 snapshot=285019
+[write] 2025-12-27_18 | book=14450910 trade=196682 snapshot=302439
+[load] 2025-12-28
+[write] 2025-12-28_00 | book=13811914 trade=176984 snapshot=254441
+[write] 2025-12-28_06 | book=14686851 trade=182727 snapshot=284530
+[write] 2025-12-28_12 | book=14902890 trade=199393 snapshot=284584
+[write] 2025-12-28_18 | book=17082965 trade=327041 snapshot=279435
+[load] 2025-12-29
+[write] 2025-12-29_00 | book=30538462 trade=1219542 snapshot=346873
+[write] 2025-12-29_06 | book=27240881 trade=991205 snapshot=328384
+[write] 2025-12-29_12 | book=36249510 trade=1266309 snapshot=346186
+[write] 2025-12-29_18 | book=19945483 trade=426528 snapshot=276300
+[load] 2025-12-30
+[write] 2025-12-30_00 | book=18580688 trade=435298 snapshot=285629
+[write] 2025-12-30_06 | book=21493558 trade=540461 snapshot=296924
+[write] 2025-12-30_12 | book=36571612 trade=1325118 snapshot=341563
+[write] 2025-12-30_18 | book=19043971 trade=450781 snapshot=269725
+[load] 2025-12-31
+[write] 2025-12-31_00 | book=19101365 trade=370139 snapshot=308384
+[write] 2025-12-31_06 | book=18279206 trade=337386 snapshot=337071
+[write] 2025-12-31_12 | book=31288780 trade=1007178 snapshot=357404
+[write] 2025-12-31_18 | book=19159845 trade=394817 snapshot=312693
+[load] 2026-01-01
+[write] 2026-01-01_00 | book=14595530 trade=260740 snapshot=277181
+[write] 2026-01-01_06 | book=13304097 trade=169788 snapshot=256002
+[write] 2026-01-01_12 | book=16882298 trade=316055 snapshot=267254
+[write] 2026-01-01_18 | book=17827366 trade=310400 snapshot=272818

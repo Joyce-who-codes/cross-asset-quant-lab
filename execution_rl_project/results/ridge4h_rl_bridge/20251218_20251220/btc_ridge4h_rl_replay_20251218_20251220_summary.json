@@ -1,0 +1,13 @@
+{
+  "num_signals": 2,
+  "start_day": "2025-12-18",
+  "end_day": "2025-12-20",
+  "target_csv": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/execution_4h/btc_execution_targets_4h_20251218_20251228.csv",
+  "output_csv": "/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/ridge4h_rl_bridge/20251218_20251220/btc_ridge4h_rl_replay_20251218_20251220.csv",
+  "ppo_total_reward": 28.520000000006984,
+  "twap_total_reward": 28.520000000006984,
+  "ppo_total_excess_cost": 0.0,
+  "twap_total_excess_cost": 0.0,
+  "ppo_total_filled_qty": 23.3225289000701,
+  "twap_total_filled_qty": 23.3225289000701
+}

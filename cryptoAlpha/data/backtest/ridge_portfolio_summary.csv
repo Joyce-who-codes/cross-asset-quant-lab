@@ -1,0 +1,2 @@
+rebalance_every_hours,portfolio_forward_hours,n_periods,mean_ret,vol,sharpe,cum_return_last,max_drawdown,avg_turnover,avg_long_count,avg_short_count,avg_gross_exposure,avg_net_exposure
+24,24,10417,0.0003388252828652853,0.009117302457047541,3.4782556582889512,21.254894494845445,-0.32922678002498995,0.14821925698377653,0.9827205529423059,0.9827205529423059,1.9654411058846117,0.0

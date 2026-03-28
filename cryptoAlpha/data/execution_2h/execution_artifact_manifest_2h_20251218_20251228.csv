@@ -1,0 +1,8 @@
+artifact,path,exists
+train_config,/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/configs/train_btc_long.yaml,True
+buy_checkpoint,/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints_btcusdt_buy_1m/btcusdt_buy_1m.zip,True
+buy_vecnormalize,/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints_btcusdt_buy_1m/btcusdt_buy_1m_vecnormalize.pkl,True
+sell_checkpoint,/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints_btcusdt_sell_1m/btcusdt_sell_1m.zip,True
+sell_vecnormalize,/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/results/checkpoints_btcusdt_sell_1m/btcusdt_sell_1m_vecnormalize.pkl,True
+buy_train_log,/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/.copilot_run_logs/btcusdt_buy/step3_train_both.log,True
+sell_train_log,/home/joyce/projects/cross-asset-quant-lab/execution_rl_project/.copilot_run_logs/btcusdt_sell/step3_train_both.log,True

@@ -1,0 +1,23 @@
+=== Evaluation Summary ===
+side: buy
+total_reward: 33.58
+arrival_price: 88988.25
+filled_qty: 0.05
+remaining_qty: 0.0
+position: 0.05
+equity: 1.374453
+
+=== Action Counts ===
+MARKET_SMALL       10  (100.00%)
+
+=== Step Trace ===
+step=00 | action=MARKET_SMALL     | bid/ask_before=(88988.20, 88988.30) | bid/ask_after=(88940.90, 88941.00) | reward=-0.005000 | shortfall=+0.050000 | shortfall_reward=-0.005000 | terminal=+0.000000 | fill_px=88988.300000 | filled_now=0.005000 | cum_filled=0.005000 | remaining=0.045000 | position=0.005000 | done=False
+step=01 | action=MARKET_SMALL     | bid/ask_before=(88940.90, 88941.00) | bid/ask_after=(88947.10, 88947.20) | reward=+4.725000 | shortfall=-47.250000 | shortfall_reward=+4.725000 | terminal=+0.000000 | fill_px=88941.000000 | filled_now=0.005000 | cum_filled=0.010000 | remaining=0.040000 | position=0.010000 | done=False
+step=02 | action=MARKET_SMALL     | bid/ask_before=(88947.10, 88947.20) | bid/ask_after=(88895.80, 88895.90) | reward=+4.105000 | shortfall=-41.050000 | shortfall_reward=+4.105000 | terminal=+0.000000 | fill_px=88947.200000 | filled_now=0.005000 | cum_filled=0.015000 | remaining=0.035000 | position=0.015000 | done=False
+step=03 | action=MARKET_SMALL     | bid/ask_before=(88895.80, 88895.90) | bid/ask_after=(88899.20, 88899.30) | reward=+9.235000 | shortfall=-92.350000 | shortfall_reward=+9.235000 | terminal=+0.000000 | fill_px=88895.900000 | filled_now=0.005000 | cum_filled=0.020000 | remaining=0.030000 | position=0.020000 | done=False
+step=04 | action=MARKET_SMALL     | bid/ask_before=(88899.20, 88899.30) | bid/ask_after=(88942.50, 88942.60) | reward=+8.895000 | shortfall=-88.950000 | shortfall_reward=+8.895000 | terminal=+0.000000 | fill_px=88899.300000 | filled_now=0.005000 | cum_filled=0.025000 | remaining=0.025000 | position=0.025000 | done=False
+step=05 | action=MARKET_SMALL     | bid/ask_before=(88942.50, 88942.60) | bid/ask_after=(88955.60, 88955.70) | reward=+4.565000 | shortfall=-45.650000 | shortfall_reward=+4.565000 | terminal=+0.000000 | fill_px=88942.600000 | filled_now=0.005000 | cum_filled=0.030000 | remaining=0.020000 | position=0.030000 | done=False
+step=06 | action=MARKET_SMALL     | bid/ask_before=(88955.60, 88955.70) | bid/ask_after=(88975.90, 88976.00) | reward=+3.255000 | shortfall=-32.550000 | shortfall_reward=+3.255000 | terminal=+0.000000 | fill_px=88955.700000 | filled_now=0.005000 | cum_filled=0.035000 | remaining=0.015000 | position=0.035000 | done=False
+step=07 | action=MARKET_SMALL     | bid/ask_before=(88975.90, 88976.00) | bid/ask_after=(88986.90, 88987.00) | reward=+1.225000 | shortfall=-12.250000 | shortfall_reward=+1.225000 | terminal=+0.000000 | fill_px=88976.000000 | filled_now=0.005000 | cum_filled=0.040000 | remaining=0.010000 | position=0.040000 | done=False
+step=08 | action=MARKET_SMALL     | bid/ask_before=(88986.90, 88987.00) | bid/ask_after=(89013.60, 89013.70) | reward=+0.125000 | shortfall=-1.250000 | shortfall_reward=+0.125000 | terminal=+0.000000 | fill_px=88987.000000 | filled_now=0.005000 | cum_filled=0.045000 | remaining=0.005000 | position=0.045000 | done=False
+step=09 | action=MARKET_SMALL     | bid/ask_before=(89013.60, 89013.70) | bid/ask_after=(88706.50, 88706.60) | reward=-2.545000 | shortfall=+25.450000 | shortfall_reward=-2.545000 | terminal=+0.000000 | fill_px=89013.700000 | filled_now=0.005000 | cum_filled=0.050000 | remaining=0.000000 | position=0.050000 | done=True

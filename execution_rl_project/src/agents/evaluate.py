@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 import argparse
-from collections import Counter
+import random
+import statistics
 from pathlib import Path
-from typing import Any, cast
 
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
+from src.baselines.passive_best_bid import run_passive_best_bid
+from src.baselines.passive_then_sweep import run_passive_then_sweep
+from src.baselines.twap_market import run_twap_market
 from src.env.execution_env import ExecutionEnv
 from src.utils.io import load_yaml
 from src.utils.project_paths import PROJECT_ROOT
@@ -25,30 +28,22 @@ ACTION_NAME = {
 }
 
 
-def make_env(
-    env_cfg: dict,
-    chunk_paths: list[dict[str, str]],
-):
-    def _init():
-        return ExecutionEnv(
-            env_cfg=env_cfg,
-            chunk_paths=chunk_paths,
-        )
-
-    return _init
-
-
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Evaluate PPO execution agent on chunk parquet data")
+    parser = argparse.ArgumentParser(description="Evaluate PPO execution agent against baselines on one chunk")
     parser.add_argument("--symbol", required=True)
     parser.add_argument("--side", required=True, choices=["buy", "sell"])
     parser.add_argument("--chunk-index", type=int, default=0)
+    parser.add_argument("--episodes", type=int, default=50)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--min-start", type=int, default=2000)
+    parser.add_argument("--tail-buffer", type=int, default=5000)
     parser.add_argument("--train-config", default="configs/train_btc_long.yaml")
     parser.add_argument("--chunk-root", type=str, default=None)
     return parser.parse_args()
 
 
-def build_env_cfg(symbol: str, side: str) -> dict:
+def build_env_cfg(symbol: str, side: str, train_cfg: dict | None = None) -> dict:
+    train_cfg = train_cfg or {}
     return {
         "asset": {"symbol": symbol, "tick_size": 0.1, "lot_size": 0.001},
         "backtest": {
@@ -71,8 +66,121 @@ def build_env_cfg(symbol: str, side: str) -> dict:
             "random_start": True,
             "random_chunk": False,
         },
-        "reward": {"lambda_terminal_remain": 3.0},
+        "reward": {
+            "lambda_terminal_remain": float(train_cfg.get("lambda_terminal_remain", 3.0)),
+            "mode": str(train_cfg.get("reward_mode", "shortfall")),
+            "lambda_lag": float(train_cfg.get("lambda_lag", 0.0)),
+            "lambda_taker": float(train_cfg.get("lambda_taker", 0.0)),
+            "lambda_excess": float(train_cfg.get("lambda_excess", 0.0)),
+        },
     }
+
+
+def summarize(name: str, results: list[dict]) -> None:
+    n = len(results)
+    avg_reward = sum(x["reward"] for x in results) / n
+    avg_fill = sum(x["filled_qty"] for x in results) / n
+    avg_remain = sum(x["remaining_qty"] for x in results) / n
+    avg_equity = sum(x["equity"] for x in results) / n
+    avg_agent_cost = sum(x.get("agent_total_cost", 0.0) for x in results) / n
+    avg_benchmark_cost = sum(x.get("benchmark_total_cost", 0.0) for x in results) / n
+    avg_excess_cost = sum(x.get("excess_cost", 0.0) for x in results) / n
+    avg_taker_fill = sum(x.get("taker_fill_qty", 0.0) for x in results) / n
+
+    reward_std = statistics.pstdev([x["reward"] for x in results]) if n > 1 else 0.0
+    fill_std = statistics.pstdev([x["filled_qty"] for x in results]) if n > 1 else 0.0
+    remain_std = statistics.pstdev([x["remaining_qty"] for x in results]) if n > 1 else 0.0
+    equity_std = statistics.pstdev([x["equity"] for x in results]) if n > 1 else 0.0
+
+    print(f"{name}:")
+    print(f"  episodes={n}")
+    print(f"  avg_reward={avg_reward:.6f} | std_reward={reward_std:.6f}")
+    print(f"  avg_filled={avg_fill:.6f} | std_filled={fill_std:.6f}")
+    print(f"  avg_remaining={avg_remain:.6f} | std_remaining={remain_std:.6f}")
+    print(f"  avg_equity={avg_equity:.6f} | std_equity={equity_std:.6f}")
+    print(f"  avg_agent_cost={avg_agent_cost:.6f}")
+    print(f"  avg_benchmark_cost={avg_benchmark_cost:.6f}")
+    print(f"  avg_excess_cost={avg_excess_cost:.6f}")
+    print(f"  avg_taker_fill={avg_taker_fill:.6f}")
+    print()
+
+
+def sample_start_indices(
+    env: ExecutionEnv,
+    episodes: int,
+    min_start: int = 2000,
+    tail_buffer: int = 5000,
+    seed: int = 42,
+) -> list[int]:
+    rng = random.Random(seed)
+    wrapper = env._require_wrapper()
+    usable = max(min_start + 1, wrapper.num_events() - tail_buffer)
+    return [rng.randint(min_start, usable - 1) for _ in range(episodes)]
+
+
+def run_ppo_model(
+    env_cfg: dict,
+    book_path: str,
+    trade_path: str,
+    snapshot_path: str | None,
+    model_path: str,
+    vecnorm_path: str,
+    start_indices: list[int],
+) -> list[dict]:
+    def make_env():
+        return ExecutionEnv(
+            env_cfg=env_cfg,
+            book_path=book_path,
+            trade_path=trade_path,
+            snapshot_path=snapshot_path,
+        )
+
+    base_env = DummyVecEnv([make_env])
+    env_norm = VecNormalize.load(vecnorm_path, base_env)
+    env_norm.training = False
+    env_norm.norm_reward = False
+
+    model = PPO.load(model_path)
+    raw_env = base_env.envs[0]
+
+    results: list[dict] = []
+
+    for start_idx in start_indices:
+        obs_raw, _ = raw_env.reset(options={"start_idx": int(start_idx)})
+        obs = env_norm.normalize_obs(np.asarray([obs_raw], dtype=np.float32))
+
+        done = False
+        final_info = None
+        total_reward = 0.0
+
+        while not done:
+            action, _ = model.predict(obs, deterministic=True)
+            action_id = int(action[0]) if not isinstance(action, int) else int(action)
+            obs_raw, reward, terminated, truncated, info = raw_env.step(action_id)
+            obs = env_norm.normalize_obs(np.asarray([obs_raw], dtype=np.float32))
+            done = bool(terminated or truncated)
+            total_reward += float(reward)
+            final_info = info
+
+        if final_info is None:
+            raise RuntimeError("PPO evaluation finished without final info")
+
+        results.append(
+            {
+                "start_idx": int(start_idx),
+                "reward": float(total_reward),
+                "filled_qty": float(final_info["filled_qty"]),
+                "remaining_qty": float(final_info["remaining_qty"]),
+                "equity": float(final_info["equity"]),
+                "agent_total_cost": float(final_info.get("agent_total_cost", 0.0)),
+                "benchmark_total_cost": float(final_info.get("benchmark_total_cost", 0.0)),
+                "excess_cost": float(final_info.get("excess_cost", 0.0)),
+                "taker_fill_qty": float(final_info.get("taker_fill_qty", 0.0)),
+            }
+        )
+
+    env_norm.close()
+    return results
 
 
 def main() -> None:
@@ -91,128 +199,64 @@ def main() -> None:
         chunk_hours=int(train_cfg.get("chunk_hours", 6)),
         chunk_root=args.chunk_root,
     )
+    chunk_index = max(0, min(int(args.chunk_index), len(chunk_paths) - 1))
+    chunk_cfg = chunk_paths[chunk_index]
 
-    env_cfg = build_env_cfg(symbol=symbol, side=side)
-    env_cfg["execution"]["fixed_chunk_index"] = int(args.chunk_index)
+    env_cfg = build_env_cfg(symbol=symbol, side=side, train_cfg=train_cfg)
 
-    run_name = f"{symbol.lower()}_{side}_1m"
+    run_name_suffix = str(train_cfg.get("run_name_suffix", ""))
+    run_name = f"{symbol.lower()}_{side}_1m{run_name_suffix}"
     ckpt_dir = PROJECT_ROOT / "results" / f"checkpoints_{run_name}"
     vecnorm_path = str(ckpt_dir / f"{run_name}_vecnormalize.pkl")
     model_path = str(ckpt_dir / f"{run_name}.zip")
 
-    base_env = DummyVecEnv(
-        [
-            make_env(
-                env_cfg=env_cfg,
-                chunk_paths=chunk_paths,
-            )
-        ]
+    env = ExecutionEnv(
+        env_cfg=env_cfg,
+        book_path=chunk_cfg["book_path"],
+        trade_path=chunk_cfg["trade_path"],
+        snapshot_path=chunk_cfg["snapshot_path"],
     )
 
-    env = VecNormalize.load(vecnorm_path, base_env)
-    env.training = False
-    env.norm_reward = False
+    start_indices = sample_start_indices(
+        env,
+        episodes=int(args.episodes),
+        min_start=int(args.min_start),
+        tail_buffer=int(args.tail_buffer),
+        seed=int(args.seed),
+    )
 
-    model = PPO.load(model_path, env=env)
-
-    obs = env.reset()
-
-    done = False
-    total_reward = 0.0
-    action_counter: Counter[str] = Counter()
-    trace_rows: list[dict[str, Any]] = []
-
-    step_idx = 0
-    final_info: dict[str, Any] | None = None
-
-    raw_env = cast(ExecutionEnv, base_env.envs[0])
-
-    while not done:
-        state_before = raw_env._require_wrapper().get_market_state()
-
-        action, _ = model.predict(cast(Any, obs), deterministic=True)
-        action = int(action[0]) if not isinstance(action, int) else int(action)
-
-        action_name = ACTION_NAME[action]
-        action_counter[action_name] += 1
-
-        obs, reward, dones, infos = env.step(np.array([action], dtype=np.int64))
-        done = bool(dones[0])
-
-        reward_scalar = float(reward[0])
-        step_info = cast(dict[str, Any], infos[0])
-        final_info = step_info
-        total_reward += reward_scalar
-
-        state_after = raw_env._require_wrapper().get_market_state()
-
-        filled_now = float(step_info["filled_now"])
-        filled_qty = float(step_info["filled_qty"])
-        remaining_qty = float(step_info["remaining_qty"])
-
-        trace_rows.append(
-            {
-                "step": step_idx,
-                "action": action_name,
-                "best_bid_before": round(float(state_before.best_bid), 4),
-                "best_ask_before": round(float(state_before.best_ask), 4),
-                "best_bid_after": round(float(state_after.best_bid), 4),
-                "best_ask_after": round(float(state_after.best_ask), 4),
-                "reward": round(reward_scalar, 6),
-                "shortfall": round(float(step_info["shortfall"]), 6),
-                "shortfall_reward": round(float(step_info["shortfall_reward"]), 6),
-                "terminal_penalty": round(float(step_info["terminal_penalty"]), 6),
-                "avg_fill_price": round(float(step_info["avg_fill_price"]), 6),
-                "filled_now": round(filled_now, 6),
-                "cum_filled": round(filled_qty, 6),
-                "remaining": round(remaining_qty, 6),
-                "position": round(float(step_info["position"]), 6),
-                "done": done,
-            }
-        )
-
-        step_idx += 1
-
-    if final_info is None:
-        raise RuntimeError("Evaluation finished without producing any step info.")
-
-    print("=== Evaluation Summary ===")
+    print("=== Evaluation Setup ===")
+    print("symbol:", symbol)
     print("side:", side)
-    print("total_reward:", round(total_reward, 6))
-    print("arrival_price:", round(float(final_info["arrival_price"]), 6))
-    print("filled_qty:", round(float(final_info["filled_qty"]), 6))
-    print("remaining_qty:", round(float(final_info["remaining_qty"]), 6))
-    print("position:", round(float(final_info["position"]), 6))
-    print("equity:", round(float(final_info["equity"]), 6))
+    print("chunk_index:", chunk_index)
+    print("chunk:", chunk_cfg["chunk"])
+    print("episodes:", len(start_indices))
+    print("seed:", int(args.seed))
+    print("model_path:", model_path)
+    print("vecnorm_path:", vecnorm_path)
     print()
 
-    print("=== Action Counts ===")
-    total_actions = sum(action_counter.values())
-    for action_name, count in action_counter.items():
-        pct = 100.0 * count / max(total_actions, 1)
-        print(f"{action_name:16s} {count:4d}  ({pct:6.2f}%)")
-    print()
+    twap_results = run_twap_market(env, episodes=len(start_indices), start_indices=start_indices)
+    summarize("TWAP Market", twap_results)
 
-    print("=== Step Trace ===")
-    for row in trace_rows:
-        print(
-            f"step={row['step']:02d} | "
-            f"action={row['action']:16s} | "
-            f"bid/ask_before=({row['best_bid_before']:.2f}, {row['best_ask_before']:.2f}) | "
-            f"bid/ask_after=({row['best_bid_after']:.2f}, {row['best_ask_after']:.2f}) | "
-            f"reward={row['reward']:+.6f} | "
-            f"shortfall={row['shortfall']:+.6f} | "
-            f"shortfall_reward={row['shortfall_reward']:+.6f} | "
-            f"terminal={row['terminal_penalty']:+.6f} | "
-            f"fill_px={row['avg_fill_price']:.6f} | "
-            f"filled_now={row['filled_now']:.6f} | "
-            f"cum_filled={row['cum_filled']:.6f} | "
-            f"remaining={row['remaining']:.6f} | "
-            f"position={row['position']:.6f} | "
-            f"done={row['done']}"
-        )
+    best_bid_results = run_passive_best_bid(env, episodes=len(start_indices), start_indices=start_indices)
+    summarize("Passive Best Bid", best_bid_results)
+
+    passive_sweep_results = run_passive_then_sweep(env, episodes=len(start_indices), start_indices=start_indices)
+    summarize("Passive Then Sweep", passive_sweep_results)
 
     env.close()
+
+    ppo_results = run_ppo_model(
+        env_cfg=env_cfg,
+        book_path=chunk_cfg["book_path"],
+        trade_path=chunk_cfg["trade_path"],
+        snapshot_path=chunk_cfg["snapshot_path"],
+        model_path=model_path,
+        vecnorm_path=vecnorm_path,
+        start_indices=start_indices,
+    )
+    summarize("PPO Trained Model", ppo_results)
 
 
 if __name__ == "__main__":

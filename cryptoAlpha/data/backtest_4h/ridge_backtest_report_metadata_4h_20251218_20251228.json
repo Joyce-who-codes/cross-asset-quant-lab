@@ -1,0 +1,30 @@
+{
+  "backtest_dir": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h",
+  "output_label": "4h",
+  "date_tag": "20251218_20251228",
+  "files": {
+    "holding_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_holding_df_4h_20251218_20251228.parquet",
+    "weight_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_weight_df_4h_20251218_20251228.parquet",
+    "portfolio_return_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_portfolio_return_4h_20251218_20251228.csv",
+    "cumret_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_cumret_4h_20251218_20251228.csv",
+    "summary_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_portfolio_summary_4h_20251218_20251228.csv",
+    "metadata_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_pipeline_metadata_4h_20251218_20251228.json",
+    "full_summary_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_portfolio_summary_full_4h_20251218_20251228.csv",
+    "report_png": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_backtest_report_4h_20251218_20251228.png",
+    "nav_png": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest_4h/ridge_nav_4h_20251218_20251228.png"
+  },
+  "extended_summary": {
+    "n_periods": 264,
+    "mean_ret": 0.0005254240725716974,
+    "vol": 0.006403159695761917,
+    "annual_return": 4.602714875728069,
+    "annual_vol": 0.5993029099073401,
+    "sharpe": 7.680114345568634,
+    "sortino": 11.739139170957566,
+    "cum_return_last": 0.14257876895146904,
+    "max_drawdown": -0.07508505941796684,
+    "calmar": 61.30000976686184,
+    "hit_rate": 0.5568181818181818,
+    "avg_turnover": 0.8106060606060606
+  }
+}

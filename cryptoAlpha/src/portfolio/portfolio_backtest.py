@@ -54,7 +54,11 @@ def prepare_hourly_returns(
 ) -> pd.DataFrame:
     """
     Build 1-hour forward returns from panel data.
-    Mainly used for plotting intra-holding PnL path if needed.
+
+    Returns
+    -------
+    pd.DataFrame
+        ['datetime', 'symbol', 'fwd_ret_1h']
     """
     required = {"datetime", "symbol", price_col}
     missing = required - set(panel_df.columns)
@@ -136,8 +140,8 @@ def build_top_bottom_weights(
 
         g["weight"] = 0.0
         if q > 0:
-            g.iloc[:q, g.columns.get_loc("weight")] = -1.0 / q
-            g.iloc[-q:, g.columns.get_loc("weight")] = 1.0 / q
+            g.loc[g.index[:q], "weight"] = -1.0 / q
+            g.loc[g.index[-q:], "weight"] = 1.0 / q
         return g
 
     out = df.groupby("datetime", group_keys=False).apply(_assign)
@@ -150,7 +154,6 @@ def expand_weights_to_all_hours(
 ) -> pd.DataFrame:
     """
     Forward-fill rebalance weights to all hourly timestamps.
-    This is useful for plotting hourly exposure / turnover path.
 
     Parameters
     ----------
@@ -195,6 +198,90 @@ def compute_turnover(weight_panel: pd.DataFrame) -> pd.Series:
     return wp.diff().abs().sum(axis=1)
 
 
+def build_execution_target_table(
+    bt_result: dict,
+    panel_df: pd.DataFrame,
+    symbol: str = "BTCUSDT",
+    initial_portfolio_value: float = 1.0,
+    price_col: str = "close",
+) -> pd.DataFrame:
+    """
+    Build a rebalance-level execution table for a single symbol.
+
+    Returns
+    -------
+    pd.DataFrame
+        ['datetime', 'current_weight', 'target_weight', 'delta_weight',
+         'portfolio_value', 'price', 'target_qty']
+    """
+    if initial_portfolio_value <= 0:
+        raise ValueError("initial_portfolio_value must be positive")
+
+    required_bt = {"weight_df", "cumret"}
+    missing_bt = required_bt - set(bt_result.keys())
+    if missing_bt:
+        raise ValueError(f"bt_result missing keys: {missing_bt}")
+
+    required_panel = {"datetime", "symbol", price_col}
+    missing_panel = required_panel - set(panel_df.columns)
+    if missing_panel:
+        raise ValueError(f"panel_df missing columns: {missing_panel}")
+
+    weight_df = bt_result["weight_df"].copy()
+    weight_df["datetime"] = pd.to_datetime(weight_df["datetime"])
+
+    symbol_weight_df = (
+        weight_df.loc[weight_df["symbol"] == symbol, ["datetime", "weight"]]
+        .sort_values("datetime")
+        .rename(columns={"weight": "target_weight"})
+        .reset_index(drop=True)
+    )
+
+    if symbol_weight_df.empty:
+        raise ValueError(f"No weights found for symbol={symbol}")
+
+    symbol_weight_df["current_weight"] = symbol_weight_df["target_weight"].shift(1).fillna(0.0)
+    symbol_weight_df["delta_weight"] = (
+        symbol_weight_df["target_weight"] - symbol_weight_df["current_weight"]
+    )
+
+    portfolio_value = bt_result["cumret"].rename("cumret").reset_index()
+    portfolio_value.columns = ["datetime", "cumret"]
+    portfolio_value["datetime"] = pd.to_datetime(portfolio_value["datetime"])
+    portfolio_value["portfolio_value"] = initial_portfolio_value * portfolio_value["cumret"]
+
+    price_df = (
+        panel_df.loc[panel_df["symbol"] == symbol, ["datetime", price_col]]
+        .copy()
+        .rename(columns={price_col: "price"})
+    )
+    price_df["datetime"] = pd.to_datetime(price_df["datetime"])
+
+    out = symbol_weight_df.merge(
+        portfolio_value[["datetime", "portfolio_value"]],
+        on="datetime",
+        how="left",
+    ).merge(
+        price_df,
+        on="datetime",
+        how="left",
+    )
+
+    out["target_qty"] = out["delta_weight"] * out["portfolio_value"] / out["price"]
+
+    return out[
+        [
+            "datetime",
+            "current_weight",
+            "target_weight",
+            "delta_weight",
+            "portfolio_value",
+            "price",
+            "target_qty",
+        ]
+    ]
+
+
 def backtest_long_short_portfolio(
     pred_df: pd.DataFrame,
     panel_df: pd.DataFrame,
@@ -206,24 +293,17 @@ def backtest_long_short_portfolio(
     """
     End-to-end portfolio backtest from model score to returns.
 
-    Parameters
-    ----------
-    pred_df : pd.DataFrame
-        ['datetime', 'symbol', 'score']
-    panel_df : pd.DataFrame
-        ['datetime', 'symbol', price_col]
-    quantile : float
-        top/bottom bucket fraction
-    rebalance_every_hours : int
-        e.g. 1 / 4 / 24
-    portfolio_forward_hours : int
-        forward holding / evaluation horizon for portfolio return
-    price_col : str
-        close price column
+    Notes
+    -----
+    This function now uses path-based hourly PnL accumulation as the main
+    backtest logic:
+        pnl_t = weight_t * fwd_ret_1h_t
 
-    Returns
-    -------
-    dict
+    So:
+    - rebalance_every_hours controls how often weights are refreshed
+    - portfolio_forward_hours is kept mainly for summary / compatibility /
+      signal evaluation reference, but main portfolio PnL no longer uses
+      direct H-hour forward return multiplication.
     """
     pred = pred_df.copy()
     pred["datetime"] = pd.to_datetime(pred["datetime"])
@@ -252,27 +332,36 @@ def backtest_long_short_portfolio(
         quantile=quantile,
     )
 
-    # Main portfolio return is computed on rebalance timestamps
+    # For reference / signal evaluation only
     period_df = weight_df.merge(
         returns_df,
         on=["datetime", "symbol"],
         how="left",
     )
-    period_df["pnl"] = period_df["weight"] * period_df["fwd_ret"]
+    period_df["pnl_fwd"] = period_df["weight"] * period_df["fwd_ret"]
+
+    # Main trading path: hourly holding pnl
+    holding_df = expand_weights_to_all_hours(
+        weight_df=weight_df,
+        returns_df_1h=hourly_returns_df,
+    )
+
+    if rebalance_ts:
+        active_start = pd.Timestamp(rebalance_ts[0])
+        active_end = pd.Timestamp(rebalance_ts[-1]) + pd.Timedelta(hours=rebalance_every_hours - 1)
+        holding_df = holding_df[
+            holding_df["datetime"].between(active_start, active_end)
+        ].reset_index(drop=True)
+
+    holding_df["pnl"] = holding_df["weight"] * holding_df["fwd_ret_1h"]
 
     portfolio_return = (
-        period_df.groupby("datetime")["pnl"]
+        holding_df.groupby("datetime")["pnl"]
         .sum()
         .sort_index()
     )
 
     cumret = (1.0 + portfolio_return.fillna(0.0)).cumprod()
-
-    # Hourly holding path for turnover / exposure visualization
-    holding_df = expand_weights_to_all_hours(
-        weight_df=weight_df,
-        returns_df_1h=hourly_returns_df,
-    )
 
     weight_panel = (
         holding_df.pivot(index="datetime", columns="symbol", values="weight")
@@ -292,10 +381,10 @@ def backtest_long_short_portfolio(
         "rebalance_timestamps": rebalance_ts,
         "rebalance_signal": rebalance_signal,
         "weight_df": weight_df,
-        "period_df": period_df,
-        "holding_df": holding_df,
+        "period_df": period_df,          # reference only
+        "holding_df": holding_df,        # main hourly path
         "weight_panel": weight_panel,
-        "portfolio_return": portfolio_return,
+        "portfolio_return": portfolio_return,  # now hourly pnl series
         "cumret": cumret,
         "turnover": turnover,
         "long_count": long_count,
@@ -314,8 +403,8 @@ def summarize_portfolio_result(
 
     Note
     ----
-    annualization_hours refers to the number of hours in one year.
-    Effective annualization factor is adjusted by portfolio_forward_hours.
+    Since the main portfolio_return is now hourly path-based return,
+    annualization uses annualization_hours directly.
     """
     ret = bt_result["portfolio_return"].dropna()
     if ret.empty:
@@ -327,14 +416,12 @@ def summarize_portfolio_result(
     mean_ret = ret.mean()
     vol = ret.std()
 
-    portfolio_forward_hours = bt_result["portfolio_forward_hours"]
-    periods_per_year = annualization_hours / portfolio_forward_hours
-
+    periods_per_year = annualization_hours
     sharpe = np.sqrt(periods_per_year) * mean_ret / (vol + EPS)
 
     summary = {
         "rebalance_every_hours": bt_result["rebalance_every_hours"],
-        "portfolio_forward_hours": portfolio_forward_hours,
+        "portfolio_forward_hours": bt_result["portfolio_forward_hours"],
         "n_periods": int(ret.shape[0]),
         "mean_ret": float(mean_ret),
         "vol": float(vol),

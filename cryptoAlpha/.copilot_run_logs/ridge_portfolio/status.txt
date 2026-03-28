@@ -1,0 +1,6 @@
+2026-03-27T18:41:54+08:00 | START ridge portfolio pipeline
+2026-03-27T18:41:54+08:00 | REPO_ROOT=/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha
+2026-03-27T18:41:54+08:00 | PYTHON_BIN=/home/joyce/.venv/bin/python
+2026-03-27T18:41:54+08:00 | STEP 1 run Ridge alpha train/save/backtest pipeline
+2026-03-27T18:43:11+08:00 | STEP 1 done
+2026-03-27T18:43:11+08:00 | FINISH ridge portfolio pipeline

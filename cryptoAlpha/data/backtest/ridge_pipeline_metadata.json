@@ -1,0 +1,44 @@
+{
+  "panel_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/cache/panel_top20_1h_2025_20260311.parquet",
+  "prediction_fp": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/predictions/pred_df_top20_1h_2025_20260311_ridge.parquet",
+  "daily_model_dir": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/models/daily_ridge_alpha",
+  "backtest_dir": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/backtest",
+  "execution_dir": "/home/joyce/projects/cross-asset-quant-lab/cryptoAlpha/data/execution",
+  "factor_names": [
+    "mom_24h",
+    "mom_6h",
+    "funding_z_24",
+    "oi_change_24h",
+    "taker_imbalance",
+    "long_short_ratio_z_24",
+    "volume_ratio_24",
+    "active_community_count_z_24"
+  ],
+  "summary": {
+    "rebalance_every_hours": 24,
+    "portfolio_forward_hours": 24,
+    "n_periods": 10417,
+    "mean_ret": 0.0003388252828652853,
+    "vol": 0.009117302457047541,
+    "sharpe": 3.4782556582889512,
+    "cum_return_last": 21.254894494845445,
+    "max_drawdown": -0.32922678002498995,
+    "avg_turnover": 0.14821925698377653,
+    "avg_long_count": 0.9827205529423059,
+    "avg_short_count": 0.9827205529423059,
+    "avg_gross_exposure": 1.9654411058846117,
+    "avg_net_exposure": 0.0
+  },
+  "config": {
+    "horizon": 24,
+    "train_window": 180,
+    "alpha": 1.0,
+    "quantile": 0.1,
+    "rebalance_every_hours": 24,
+    "portfolio_forward_hours": 24,
+    "execution_symbol": "BTCUSDT",
+    "execution_start": "2025-12-26",
+    "execution_end": "2025-12-28 23:59:59",
+    "initial_portfolio_value": 1000000.0
+  }
+}

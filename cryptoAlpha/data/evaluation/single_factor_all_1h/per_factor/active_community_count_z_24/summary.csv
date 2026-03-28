@@ -1,0 +1,2 @@
+factor_name,horizon,n_obs,coverage_mean,ic_mean,ic_std,ic_ir,rank_ic_mean,rank_ic_std,rank_ic_ir,factor_autocorr_mean,top_bottom_mean_ret,top_bottom_std_ret,top_bottom_sharpe_naive,avg_group_turnover
+active_community_count_z_24,1,164144,1.0,-0.0067369565643029625,0.26778648971450963,-0.025157940460178385,-0.005395136673519251,0.26291837741699203,-0.020520196140348047,0.3751556708074773,7.2876830583667355e-06,0.004034434182374729,0.0018063705409789889,0.7999059502919905
